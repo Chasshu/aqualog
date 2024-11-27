@@ -1,0 +1,152 @@
+@media (max-width:500px) { 
+  .header-pc{
+    display: none;
+  }
+
+  .header-mobile{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 45px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(240, 240, 240);
+    padding: 10px 8px 10px 15px;
+    border-radius: 5px;
+  }
+
+  .left-section{
+    margin-right: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-basis: content;
+  }
+
+  .header-mobile .title{
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0px 0px 0px 0px;
+  }
+
+  .header-mobile .address{
+    margin: 3px 0px 0px 0px;
+  }
+
+  .header-mobile .contact{
+    margin: 3px 0px 0px 0px;
+  }
+
+  .middle-section{
+    flex: 1;
+  }
+
+  .header-mobile .logo{
+    width: 35px;
+    height: 35px;
+    object-fit: cover; 
+  }
+
+  .right-section{   
+    display: flex;
+    justify-content:center;
+    width:100px; 
+  }
+
+  .login-button-header{ 
+    font-family: poppins;
+    font-size: 16px;
+    font-weight: 600;
+    background-color: #e9ecef;    
+    border: 1px  rgba(45, 106, 79, 0.13) solid;
+    padding: 8px 13px 8px 13px;
+    border-radius: 25px;
+    cursor: pointer;
+  }
+
+  .login-button-header:hover{
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@media (min-width:501px ) {
+  .header-mobile{
+    display: none;
+  }
+
+  .header-pc{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 45px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(240, 240, 240);
+    padding: 10px 15px 10px 15px;
+    border-radius: 5px;
+  }
+
+  .left-section{
+    flex-grow: 1;
+    flex: 1;
+  }
+
+  .header-pc .title{
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0px 0px 0px 0px;
+  }
+
+  .header-pc .address{
+    margin: 3px 0px 0px 0px;
+  }
+
+  .header-pc .contact{
+    margin: 3px 0px 0px 0px;
+  }
+
+  .middle-section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-basis: content;
+  }
+
+  .header-pc .logo{
+    width: 45px;
+    height: 45px;
+    object-fit: cover; 
+  }
+
+  .right-section{
+    flex-grow: 1;
+    display: flex;
+    flex: 1;
+    justify-content: end;
+  }
+
+  .login-button-header{ 
+    font-family: poppins;
+    font-size: 16px;
+    font-weight: 600;
+    background-color: #e9ecef;    
+    border: 1px  rgba(45, 106, 79, 0.13) solid;
+    padding: 8px 13px 8px 13px;
+    border-radius: 25px;
+    cursor: pointer;
+  }
+
+  .login-button-header:hover{
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+}

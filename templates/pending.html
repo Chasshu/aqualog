@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pending Reports</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='CSS/pending.css') }}">
+</head>
+<body>
+
+    <div class="top-bar">
+        <h1>Pending Reports</h1>
+    </div>
+
+    <table>
+        <tr>
+            <th>Report ID</th>
+            <th>Actions</th>
+        </tr>
+        {% for report in reports %}
+        <tr>
+            <td>{{ report.reportid }}</td>
+            <td>
+                <a href="{{ url_for('viewreport', reportid=report.reportid) }}">View</a> |
+                {% if session.role == 'admin' %}
+                <a href="{{ url_for('approvereport', reportid=report.reportid) }}">Approve</a> |
+                <a href="{{ url_for('delete_report', reportid=report.reportid) }}">Reject</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

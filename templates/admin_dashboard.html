@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='CSS/admin.css') }}">
+    <link rel="stylesheet" href="{{url_for('static', filename='CSS/Dashboard.css') }}">
+</head>
+<body>
+    <header class="top-bar">
+        <span>Welcome, Admin</span>
+    </header>
+
+    <main class="content">
+        <h1>Species Ranking</h1>
+
+        <!-- Yearly Ranking Table -->
+        <section class="table-section">
+            <h2>2022 Catch Ranking</h2>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Species</th>
+                        <th>Total Volume</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in species_ranking %}
+                    <tr>
+                        <td>{{ row.species_name }}</td>
+                        <td>{{ row.total_volume }} Kilos</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section class="table-section">
+            <h2>Species Ranking by Total Catch Volume</h2>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Species Name</th>
+                        <th>Total Volume</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ranking in species_rankings %}
+                    <tr>
+                        <td>{{ ranking.period }}</td>
+                        <td>{{ ranking.species_name }}</td>
+                        <td>{{ ranking.total_volume }} Kilo</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>

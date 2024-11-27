@@ -1,0 +1,17 @@
+SELECT 
+    s.name AS species_name, 
+    s.catchid, 
+    EXTRACT(MONTH FROM r.date) AS month, 
+    COUNT(
+        CASE 
+            WHEN r.catch1 = s.catchid THEN 1 
+            WHEN r.catch2 = s.catchid THEN 1
+            WHEN r.catch3 = s.catchid THEN 1
+            WHEN r.catch4 = s.catchid THEN 1
+            WHEN r.catch5 = s.catchid THEN 1 
+        END
+    ) AS frequency
+FROM report r
+JOIN catch s ON s.catchid IN (r.catch1, r.catch2, r.catch3, r.catch4, r.catch5)
+GROUP BY s.name, s.catchid, EXTRACT(MONTH FROM r.date)  
+ORDER BY `frequency` DESC

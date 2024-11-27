@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Species Reports</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='CSS/myreport.css') }}">
+</head>
+<body>
+    <header class="header">
+        <!-- Back Button -->
+        <a href="{{url_for('report') }}" class="back-button">← Back</a>
+        <h1>My Reports</h1>
+    </header>
+    <main class="container">
+        <!-- Approved Reports Section -->
+        <section class="reports">
+            <h2>Approved Reports</h2>
+            {% if approved_reports %}
+            <table class="reports-table">
+                <thead>
+                    <tr>
+                        <th>Report ID</th>
+                        <th>Name</th>
+                        <th>Vessel</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in approved_reports %}
+                    <tr>
+                        <td>{{ report.tempid }}</td>
+                        <td>{{ report.name }}</td>
+                        <td>{{ report.vessel }}</td>
+                        <td>{{ report.date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No approved reports found.</p>
+            {% endif %}
+        </section>
+
+        <!-- Declined Reports Section -->
+        <section class="reports">
+            <h2>Declined Reports</h2>
+            {% if declined_reports %}
+            <table class="reports-table">
+                <thead>
+                    <tr>
+                        <th>Report ID</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in declined_reports %}
+                    <tr>
+                        <td>{{ report.id }}</td>
+                        <td>{{ report.reportid }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No declined reports found.</p>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

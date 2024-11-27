@@ -1,0 +1,33 @@
+WITH SiteVolume AS (
+    SELECT 
+        st.name AS site_name, -- Site name
+        s.name AS species_name, -- Species name
+        s.catchid, -- Species ID
+        SUM(CASE WHEN r.catch1 = s.catchid THEN r.volume1 ELSE 0 END) +
+        SUM(CASE WHEN r.catch2 = s.catchid THEN r.volume2 ELSE 0 END) +
+        SUM(CASE WHEN r.catch3 = s.catchid THEN r.volume3 ELSE 0 END) +
+        SUM(CASE WHEN r.catch4 = s.catchid THEN r.volume4 ELSE 0 END) +
+        SUM(CASE WHEN r.catch5 = s.catchid THEN r.volume5 ELSE 0 END) AS total_volume
+    FROM report r
+    JOIN catch s ON s.catchid IN (r.catch1, r.catch2, r.catch3, r.catch4, r.catch5)
+    JOIN site st ON r.site = st.siteid -- Join with site table to get site name
+    WHERE s.catchid BETWEEN 2 AND 42 -- Filter for species IDs in the range 2 to 42
+    GROUP BY st.name, s.name, s.catchid
+),
+RankedSites AS (
+    SELECT 
+        site_name,
+        species_name,
+        catchid,
+        total_volume,
+        RANK() OVER (PARTITION BY catchid ORDER BY total_volume DESC) AS rank
+    FROM SiteVolume
+)
+SELECT 
+    species_name,
+    catchid,
+    site_name,
+    total_volume
+FROM RankedSites
+WHERE rank <= 3 -- Top 3 sites per species
+ORDER BY catchid, rank;

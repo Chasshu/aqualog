@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Data Visualization</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='CSS/visualization.css') }}">
+</head>
+<body>
+    <div class="header-bar">
+        <h1>Data Visualization</h1>
+    </div>
+    <div class="container">
+        <div class="form-container">
+            <form method="POST" action="{{ url_for('visualization_page') }}">
+                <label for="species">Select a species:</label>
+                <select id="species" name="species">
+                    {% for species in species_list %}
+                        <option value="{{ species['catchid'] }}">{{ species['name'] }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="year">Select a year:</label>
+                <select id="year" name="year">
+                    {% for year in range(2022, 2025) %}
+                        <option value="{{ year }}">{{ year }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Generate Graph</button>
+            </form>
+
+        {% if plot_url %}
+            <img src="data:image/png;base64,{{ plot_url }}" alt="Total Catches Per Month">
+        {% else %}
+            <p>No data available to display the graph.</p>
+        {% endif %}
+        </div>
+    </div>
+</body>
+</html>

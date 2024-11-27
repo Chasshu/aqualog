@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Approved Reports</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/viewreports.css') }}">
+</head>
+<body>
+    <div class="top-bar">
+        <h1>Approved Reports</h1>
+        <a href="{{ url_for('export_reports') }}" class="export-button">Export All to CSV</a>
+    </div>
+    
+    <table border="1">
+        <tr>
+            <th>Report ID</th>
+            <th>Name</th>
+            <th>Vessel</th>
+            <th>Export</th>
+        </tr>
+        {% for report in reports %}
+        <tr>
+            <td>{{ report.reportid }}</td>
+            <td>{{ report.name }}</td>
+            <td>{{ report.vessel }}</td>
+            <td>
+                <a href="{{ url_for('export_pdf', report_id=report.reportid) }}" class="pdf-button">Export to PDF</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

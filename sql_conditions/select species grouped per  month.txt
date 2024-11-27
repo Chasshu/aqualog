@@ -1,0 +1,15 @@
+SELECT 
+    EXTRACT(MONTH FROM r.`date`) AS month,
+    SUM(CASE WHEN r.`catch1` = 6 THEN r.`volume1` ELSE 0 END) +
+    SUM(CASE WHEN r.`catch2` = 6 THEN r.`volume2` ELSE 0 END) +
+    SUM(CASE WHEN r.`catch3` = 6 THEN r.`volume3` ELSE 0 END) +
+    SUM(CASE WHEN r.`catch4` = 6 THEN r.`volume4` ELSE 0 END) +
+    SUM(CASE WHEN r.`catch5` = 6 THEN r.`volume5` ELSE 0 END) AS total_volume
+FROM `report` r
+WHERE r.`catch1` = 6
+   OR r.`catch2` = 6
+   OR r.`catch3` = 6
+   OR r.`catch4` = 6
+   OR r.`catch5` = 6
+GROUP BY month
+ORDER BY month;

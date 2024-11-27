@@ -1,0 +1,82 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #2e7d32;
+    color: white;
+    padding: 1rem;
+}
+
+.header h1 {
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+}
+
+/* Back Button Styling */
+.back-button {
+    display: inline-block;
+    margin-right: 1rem;
+    text-decoration: none;
+    color: white;
+    background-color: #1b5e20;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #43a047;
+}
+
+/* Main Container */
+.container {
+    margin: 2rem auto;
+    max-width: 80%;
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Styling */
+.reports h2 {
+    color: #2e7d32;
+    margin-bottom: 1rem;
+}
+
+/* Table Styling */
+.reports-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reports-table th, .reports-table td {
+    padding: 1rem;
+    text-align: left;
+}
+
+.reports-table th {
+    background-color: #2e7d32;
+    color: white;
+}
+
+.reports-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.reports-table tr:hover {
+    background-color: #e0f2f1;
+    transition: 0.3s;
+}

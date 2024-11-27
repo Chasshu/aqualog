@@ -1,0 +1,125 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+.top-bar {
+    background-color: #4A9B4A;
+    color: white;
+    padding: 15px 25px;
+    font-size: 1.3em;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.top-bar span {
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-left: auto;
+}
+
+.content {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+h1 {
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.table-section {
+    width: 100%;
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.table-section h2 {
+    font-size: 1.6em;
+    color: #4A9B4A;
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.styled-table thead {
+    background-color: #4A9B4A;
+    color: #fff;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 18px;
+    text-align: left;
+    font-size: 1em;
+}
+
+.styled-table th {
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+.styled-table td {
+    color: #555;
+}
+
+.styled-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.styled-table tbody tr:nth-child(odd) {
+    background-color: #e8f9e4;
+}
+
+.styled-table tbody tr:nth-child(even) {
+    background-color: #f7f9fb;
+}
+
+.styled-table tbody tr:hover {
+    background-color: #eaf5ea;
+}
+
+.hide-button {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background-color: #4A9B4A;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.hide-button:hover {
+    background-color: #3a823a;
+}

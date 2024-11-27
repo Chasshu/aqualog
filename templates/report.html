@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='CSS/Report.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Report</h1>
+        <form method="POST">
+            <input type="text" name="name" placeholder="Name" required>
+            <input type="text" name="vessel" placeholder="Vessel" required>
+            <input type="text" name="regnumber" placeholder="Registration Number" required>
+            <input type="text" name="contact" placeholder="Contact" required>
+            <input type="text" name="frequent" placeholder="Frequent" required>
+            <input type="date" name="date" required>
+            
+            <select name="catch1" required>
+                <option value="" disabled selected hidden>Choose Species</option>
+                {% for item in catch %}
+                    <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
+                {% endfor %}
+            </select>
+            
+            <select name="catch2" required>
+                <option value="" disabled selected hidden>Choose Species</option>
+                {% for item in catch %}
+                    <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
+                {% endfor %}
+            </select>
+            
+            <select name="catch3" required>
+                <option value="" disabled selected hidden>Choose Species</option>
+                {% for item in catch %}
+                    <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
+                {% endfor %}
+            </select>
+            
+            <select name="catch4" required>
+                <option value="" disabled selected hidden>Choose Species</option>
+                {% for item in catch %}
+                    <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
+                {% endfor %}
+            </select>
+            
+            <select name="catch5" required>
+                <option value="" disabled selected hidden>Choose Species</option>
+                {% for item in catch %}
+                    <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
+                {% endfor %}
+            </select>
+            
+            
+            <input type="text" name="volume1" placeholder="Volume 1" required>
+            <input type="text" name="volume2" placeholder="Volume 2" required>
+            <input type="text" name="volume3" placeholder="Volume 3" required>
+            <input type="text" name="volume4" placeholder="Volume 4" required>
+            <input type="text" name="volume5" placeholder="Volume 5" required>
+            
+            <select name="site" required>
+                <option value="" disabled selected hidden>Site</option>
+                {% for item in site %}
+                    <option value="{{ item['siteid'] }}">{{ item['name'] }}</option>
+                {% endfor %}
+            </select>
+            <select name="gear" required>
+                <option value="" disabled selected hidden>Gear</option>
+                {% for item in gear %}
+                    <option value="{{ item['gearid'] }}">{{ item['name'] }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" name="hours" placeholder="Duration of Fishing" required>
+            <select name="landing" required>
+                <option value="" disabled selected hidden>Landing</option>
+                {% for item in landing %}
+                    <option value="{{ item['landid'] }}">{{ item['name'] }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" name="price" placeholder="Price" required>
+            
+            <button type="submit" name="submit">Proceed</button>
+        </form>
+        <button type="button">
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </button>
+        <button type="button">
+            <a href="{{ url_for('my_reports') }}">My Reports</a>
+        </button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Geo-Tagging</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='CSS/Geotagging.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    
+</head>
+<body>
+    <div class="top-bar">
+        <h1>Geo -Tagging</h1>
+    </div>
+    <div class="container">
+        <div class="dropdown">
+            <label for="map-select">Choose a species:</label>
+            <select id="map-select">
+                <option value="overview">Overview</option>
+                <option value="alamang">Alamang</option>
+                <option value="alimasag">Alimasag</option>
+                <option value="alumahan">Alumahan</option>
+                <option value="asube">Asube</option>
+                <option value="bagaon">Bagaon</option>
+                <option value="bakoko">Bakoko</option>
+                <option value="banak">Banak</option>
+                <option value="bangus">Bangus</option>
+                <option value="bidbid">Bidbid</option>
+                <option value="bikao">Bikao</option>
+                <option value="bisugo">Bisugo</option>
+                <option value="duhay">Duhay</option>
+                <option value="espada">Espada</option>
+                <option value="garopa">Garopa</option>
+                <option value="gulyasan">Gulyasan</option>
+                <option value="hipon">Hipon</option>
+                <option value="kabayas">Kabayas</option>
+                <option value="lapulapu">Lapu-Lapu</option>
+                <option value="yellowfintuna">Yellowfin Tuna</option>
+            </select>
+        </div>
+    </div>
+    <div id="map" style="height: 500px;"></div>
+    <script>
+        var map = L.map('map').setView([14.32, 120.768], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var markersData = [
+    {"lat": 14.397790, "lng": 120.584267, "name": "Corregidor", "species": "Alamang", "rank": 1},
+    {"lat": 14.318295, "lng": 120.746833, "name": "Mabulo", "species": "Alimasag", "rank": 1},
+    {"lat": 14.181806, "lng": 120.567495, "name": "Nasugbu", "species": "Alimasag", "rank": 2},
+    {"lat": 14.332421, "lng": 120.766352, "name": "Naic", "species": "Alimasag", "rank": 3},
+    {"lat": 13.700321, "lng": 120.987843, "name": "Batangas", "species": "Alumahan", "rank": 1},
+    {"lat": 14.280500, "lng": 120.681005, "name": "Puerto Azul", "species": "Alumahan", "rank": 2},
+    {"lat": 14.370277, "lng": 120.614922, "name": "Caballo Island", "species": "Alumahan", "rank": 3},
+    {"lat": 14.332421, "lng": 120.766352, "name": "Naic", "species": "Asube", "rank": 1},
+    {"lat": 14.337654, "lng": 120.769706, "name": "Munting Mapino", "species": "Asube", "rank": 2},
+    {"lat": 14.318295, "lng": 120.746833, "name": "Mabulo", "species": "Asube", "rank": 3},
+    {"lat": 14.549123, "lng": 120.739503, "name": "Manila Bay", "species": "Bagaong", "rank": 1},
+    {"lat": 14.332421, "lng": 120.766352, "name": "Naic", "species": "Bagaong", "rank": 2},
+    {"lat": 14.305086, "lng": 120.631022, "name": "Prayle", "species": "Bagaong", "rank": 3},
+    {"lat": 14.318295, "lng": 120.746833, "name": "Mabulo", "species": "Bakoko", "rank": 1},
+    {"lat": 14.344131, "lng": 120.777254, "name": "Timalan Balsahan", "species": "Bakoko", "rank": 2},
+    {"lat": 14.332421, "lng": 120.766352, "name": "Naic", "species": "Banak", "rank": 1},
+    {"lat": 14.344131, "lng": 120.777254, "name": "Timalan Balsahan", "species": "Banak", "rank": 2},
+    {"lat": 14.549123, "lng": 120.739503, "name": "Manila Bay", "species": "Banak", "rank": 3},
+    {"lat": 14.286153, "lng": 120.656006, "name": "Cayukno", "species": "Bangus", "rank": 1},
+    {"lat": 14.337654, "lng": 120.769706, "name": "Munting Mapino", "species": "Bangus", "rank": 2},
+    {"lat": 14.344131, "lng": 120.777254, "name": "Timalan Balsahan", "species": "Bangus", "rank": 3},
+    {"lat": 14.355401, "lng": 120.786730, "name": "Capipisa", "species": "Bidbid", "rank": 1},
+    {"lat": 14.305086, "lng": 120.631022, "name": "Prayle", "species": "Bidbid", "rank": 2},
+    {"lat": 14.337654, "lng": 120.769706, "name": "Munting Mapino", "species": "Bidbid", "rank": 3},
+    {"lat": 14.286153, "lng": 120.656006, "name": "Cayukno", "species": "Bidbid", "rank": 4},
+    {"lat": 14.305086, "lng": 120.631022, "name": "Prayle", "species": "Bikao", "rank": 1},
+    {"lat": 14.370277, "lng": 120.614922, "name": "Caballo Island", "species": "Bisugu", "rank": 1},
+    {"lat": 14.370277, "lng": 120.614922, "name": "Caballo Island", "species": "Duhay", "rank": 1},
+    {"lat": 14.397790, "lng": 120.584267, "name": "Corregidor", "species": "Espada", "rank": 1},
+    {"lat": 14.305086, "lng": 120.631022, "name": "Prayle", "species": "Espada", "rank": 2},
+    {"lat": 14.337654, "lng": 120.769706, "name": "Munting Mapino", "species": "Espada", "rank": 3},
+    {"lat": 14.344131, "lng": 120.777254, "name": "Timalan Balsahan", "species": "Garopa", "rank": 1},
+    {"lat": 14.332421, "lng": 120.766352, "name": "Naic", "species": "Garopa", "rank": 2},
+    {"lat": 13.454380, "lng": 121.058368, "name": "Mindoro", "species": "Gulyasan", "rank": 1},
+    {"lat": 14.332421, "lng": 120.766352, "name": "Naic", "species": "Hipon", "rank": 1},
+    {"lat": 14.337654, "lng": 120.769706, "name": "Munting Mapino", "species": "Kabayas", "rank": 1},
+    {"lat": 14.397790, "lng": 120.584267, "name": "Corregidor", "species": "Kabayas", "rank": 2},
+    {"lat": 14.305086, "lng": 120.631022, "name": "Prayle", "species": "Kabayas", "rank": 3},
+    {"lat": 14.181806, "lng": 120.567495, "name": "Nasugbu", "species": "Lapu-Lapu", "rank": 1},
+    {"lat": 14.286153, "lng": 120.656006, "name": "Cayukno", "species": "Tampal", "rank": 1},
+    {"lat": 13.454380, "lng": 121.058368, "name": "Mindoro", "species": "Yellowfin Tuna", "rank": 1}
+]
+
+
+        var allMarkers = [];
+
+        // Function to get the marker color based on rank
+        function getMarkerColor(rank) {
+            if (rank === 1) return "red";  // Red for top1
+            if (rank === 2) return "blue"; // Blue for top2
+            if (rank === 3) return "green"; // Green for top3
+            return "gray"; // Default to gray if no rank or overview
+        }
+
+        // Function to add markers to the map based on selected species
+        function addMarkers(species) {
+            // Clear existing markers
+            allMarkers.forEach(function(marker) {
+                map.removeLayer(marker);
+            });
+            allMarkers = [];
+
+            // Loop through marker data to add relevant markers
+            markersData.forEach(function(markerData) {
+                if (species === "overview" || markerData.species.toLowerCase() === species.toLowerCase()) {
+                    var markerColor = species === "overview" ? "gray" : getMarkerColor(markerData.rank);
+
+                    var marker = L.circleMarker([markerData.lat, markerData.lng], {
+                        color: markerColor,
+                        radius: 8,
+                        fillOpacity: 0.8
+                    }).bindPopup(`<strong>${markerData.name}</strong><br>Species: ${markerData.species}<br>Rank: ${markerData.rank}`);
+
+                    marker.addTo(map);
+                    allMarkers.push(marker);
+                }
+            });
+        }
+
+        // Event listener for dropdown change
+        document.getElementById("map-select").addEventListener("change", function() {
+            var selectedSpecies = this.value;
+            addMarkers(selectedSpecies);
+        });
+
+        // Initially load the map with "overview" markers
+        addMarkers("overview");
+
+// Add a legend to the map for the colors
+var legend = L.control({ position: 'bottomright' });
+legend.onAdd = function() {
+    var div = L.DomUtil.create('div', 'legend');
+    div.innerHTML = `
+        <strong>Legend:</strong><br>
+        <i style="background: red;"></i> Top 1<br>
+        <i style="background: blue;"></i> Top 2<br>
+        <i style="background: green;"></i> Top 3<br>
+        <i style="background: gray;"></i> Overview<br>
+    `;
+    return div;
+};
+legend.addTo(map);
+
+    </script>
+</body>
+</html>
