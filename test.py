@@ -519,13 +519,15 @@ def admin_dashboard():
             # Query to fetch monthly species ranking by total catch volume with species name
             cursor.execute("""
                 SELECT 
-                    year_data.period,
-                    year_data.species_name,
-                    year_data.total_volume,
-                    year_data.rank
+                    main.period,
+                    main.species_name,
+                    main.total_volume
                 FROM (
                     SELECT 
-                        CASE WHEN EXTRACT(MONTH FROM r.`date`) IS NULL THEN 'Year' ELSE MONTHNAME(r.`date`) END AS period,
+                        CASE 
+                            WHEN EXTRACT(MONTH FROM r.`date`) IS NULL THEN 'Year' 
+                            ELSE MONTHNAME(r.`date`) 
+                        END AS period,
                         CASE 
                             WHEN r.`catch1` BETWEEN 2 AND 42 THEN c1.name
                             WHEN r.`catch2` BETWEEN 2 AND 42 THEN c2.name
@@ -533,20 +535,13 @@ def admin_dashboard():
                             WHEN r.`catch4` BETWEEN 2 AND 42 THEN c4.name
                             WHEN r.`catch5` BETWEEN 2 AND 42 THEN c5.name
                         END AS species_name,
-                        SUM(CASE WHEN r.`catch1` BETWEEN 2 AND 42 THEN COALESCE(r.`volume1`, 0) ELSE 0 END) +
-                        SUM(CASE WHEN r.`catch2` BETWEEN 2 AND 42 THEN COALESCE(r.`volume2`, 0) ELSE 0 END) +
-                        SUM(CASE WHEN r.`catch3` BETWEEN 2 AND 42 THEN COALESCE(r.`volume3`, 0) ELSE 0 END) +
-                        SUM(CASE WHEN r.`catch4` BETWEEN 2 AND 42 THEN COALESCE(r.`volume4`, 0) ELSE 0 END) +
-                        SUM(CASE WHEN r.`catch5` BETWEEN 2 AND 42 THEN COALESCE(r.`volume5`, 0) ELSE 0 END) AS total_volume,
-                        ROW_NUMBER() OVER (
-                            PARTITION BY EXTRACT(YEAR FROM r.`date`), period 
-                            ORDER BY 
-                                SUM(CASE WHEN r.`catch1` BETWEEN 2 AND 42 THEN COALESCE(r.`volume1`, 0) ELSE 0 END) +
-                                SUM(CASE WHEN r.`catch2` BETWEEN 2 AND 42 THEN COALESCE(r.`volume2`, 0) ELSE 0 END) +
-                                SUM(CASE WHEN r.`catch3` BETWEEN 2 AND 42 THEN COALESCE(r.`volume3`, 0) ELSE 0 END) +
-                                SUM(CASE WHEN r.`catch4` BETWEEN 2 AND 42 THEN COALESCE(r.`volume4`, 0) ELSE 0 END) +
-                                SUM(CASE WHEN r.`catch5` BETWEEN 2 AND 42 THEN COALESCE(r.`volume5`, 0) ELSE 0 END) DESC
-                        ) AS rank
+                        SUM(
+                            CASE WHEN r.`catch1` BETWEEN 2 AND 42 THEN COALESCE(r.`volume1`, 0) ELSE 0 END +
+                            CASE WHEN r.`catch2` BETWEEN 2 AND 42 THEN COALESCE(r.`volume2`, 0) ELSE 0 END +
+                            CASE WHEN r.`catch3` BETWEEN 2 AND 42 THEN COALESCE(r.`volume3`, 0) ELSE 0 END +
+                            CASE WHEN r.`catch4` BETWEEN 2 AND 42 THEN COALESCE(r.`volume4`, 0) ELSE 0 END +
+                            CASE WHEN r.`catch5` BETWEEN 2 AND 42 THEN COALESCE(r.`volume5`, 0) ELSE 0 END
+                        ) AS total_volume
                     FROM `report` r
                     LEFT JOIN catch c1 ON r.catch1 = c1.catchid
                     LEFT JOIN catch c2 ON r.catch2 = c2.catchid
@@ -560,9 +555,46 @@ def admin_dashboard():
                          r.catch4 BETWEEN 2 AND 42 OR 
                          r.catch5 BETWEEN 2 AND 42)
                     GROUP BY period, species_name
-                ) AS year_data
-                WHERE year_data.rank = 1
-                ORDER BY year_data.period;
+                ) AS main
+                WHERE main.total_volume = (
+                    SELECT MAX(sub.total_volume)
+                    FROM (
+                        SELECT 
+                            CASE 
+                                WHEN EXTRACT(MONTH FROM r2.`date`) IS NULL THEN 'Year' 
+                                ELSE MONTHNAME(r2.`date`) 
+                            END AS period,
+                            CASE 
+                                WHEN r2.`catch1` BETWEEN 2 AND 42 THEN c1.name
+                                WHEN r2.`catch2` BETWEEN 2 AND 42 THEN c2.name
+                                WHEN r2.`catch3` BETWEEN 2 AND 42 THEN c3.name
+                                WHEN r2.`catch4` BETWEEN 2 AND 42 THEN c4.name
+                                WHEN r2.`catch5` BETWEEN 2 AND 42 THEN c5.name
+                            END AS species_name,
+                            SUM(
+                                CASE WHEN r2.`catch1` BETWEEN 2 AND 42 THEN COALESCE(r2.`volume1`, 0) ELSE 0 END +
+                                CASE WHEN r2.`catch2` BETWEEN 2 AND 42 THEN COALESCE(r2.`volume2`, 0) ELSE 0 END +
+                                CASE WHEN r2.`catch3` BETWEEN 2 AND 42 THEN COALESCE(r2.`volume3`, 0) ELSE 0 END +
+                                CASE WHEN r2.`catch4` BETWEEN 2 AND 42 THEN COALESCE(r2.`volume4`, 0) ELSE 0 END +
+                                CASE WHEN r2.`catch5` BETWEEN 2 AND 42 THEN COALESCE(r2.`volume5`, 0) ELSE 0 END
+                            ) AS total_volume
+                        FROM `report` r2
+                        LEFT JOIN catch c1 ON r2.catch1 = c1.catchid
+                        LEFT JOIN catch c2 ON r2.catch2 = c2.catchid
+                        LEFT JOIN catch c3 ON r2.catch3 = c3.catchid
+                        LEFT JOIN catch c4 ON r2.catch4 = c4.catchid
+                        LEFT JOIN catch c5 ON r2.catch5 = c5.catchid
+                        WHERE 
+                            (r2.catch1 BETWEEN 2 AND 42 OR 
+                             r2.catch2 BETWEEN 2 AND 42 OR 
+                             r2.catch3 BETWEEN 2 AND 42 OR 
+                             r2.catch4 BETWEEN 2 AND 42 OR 
+                             r2.catch5 BETWEEN 2 AND 42)
+                        GROUP BY period, species_name
+                    ) AS sub
+                    WHERE sub.period = main.period
+                )
+                ORDER BY main.period;
             """)
             species_rankings = cursor.fetchall()
 
@@ -579,6 +611,8 @@ def admin_dashboard():
     else:
         flash("Unauthorized access!", "error")
         return redirect(url_for("admin_login"))
+
+
 
 @app.route('/admin/visualization_page', methods=['GET', 'POST'])
 def visualization_page():
