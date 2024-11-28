@@ -2,15 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Visualization</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='CSS/visualization.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/visualization.css') }}">
 </head>
 <body>
+    <!-- green bar-->
     <div class="header-bar">
         <h1>Data Visualization</h1>
     </div>
+
     <div class="container">
+        <!-- Form Container -->
         <div class="form-container">
             <form method="POST" action="{{ url_for('visualization_page') }}">
                 <label for="species">Select a species:</label>
@@ -28,12 +31,15 @@
                 </select>
                 <button type="submit">Generate Graph</button>
             </form>
+        </div>
 
-        {% if plot_url %}
-            <img src="data:image/png;base64,{{ plot_url }}" alt="Total Catches Per Month">
-        {% else %}
-            <p>No data available to display the graph.</p>
-        {% endif %}
+        <!-- container for the graph-->
+        <div class="graph-container">
+            {% if plot_url %}
+                <img src="data:image/png;base64,{{ plot_url }}" alt="Total Catches Per Month">
+            {% else %}
+                <p>No data available to display the graph.</p>
+            {% endif %}
         </div>
     </div>
 </body>
