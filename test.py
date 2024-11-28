@@ -482,103 +482,112 @@ def admin_dashboard():
     if 'id' in session and session['role'] == 'admin':
         try:
             db = connect_db()
-            cursor = db.cursor(pymysql.cursors.DictCursor)
+            cursor = db.cursor()
 
-            # Query to fetch yearly species ranking by total catch volume
+            # Query for yearly species ranking
             cursor.execute("""
                 SELECT 
-                    CASE 
-                        WHEN r.`catch1` BETWEEN 2 AND 42 THEN c1.name
-                        WHEN r.`catch2` BETWEEN 2 AND 42 THEN c2.name
-                        WHEN r.`catch3` BETWEEN 2 AND 42 THEN c3.name
-                        WHEN r.`catch4` BETWEEN 2 AND 42 THEN c4.name
-                        WHEN r.`catch5` BETWEEN 2 AND 42 THEN c5.name
-                    END AS species_name,
-                    SUM(CASE WHEN r.`catch1` BETWEEN 2 AND 42 THEN COALESCE(r.`volume1`, 0) ELSE 0 END) +
-                    SUM(CASE WHEN r.`catch2` BETWEEN 2 AND 42 THEN COALESCE(r.`volume2`, 0) ELSE 0 END) +
-                    SUM(CASE WHEN r.`catch3` BETWEEN 2 AND 42 THEN COALESCE(r.`volume3`, 0) ELSE 0 END) +
-                    SUM(CASE WHEN r.`catch4` BETWEEN 2 AND 42 THEN COALESCE(r.`volume4`, 0) ELSE 0 END) +
-                    SUM(CASE WHEN r.`catch5` BETWEEN 2 AND 42 THEN COALESCE(r.`volume5`, 0) ELSE 0 END) AS total_volume
-                FROM `report` r
-                LEFT JOIN catch c1 ON r.catch1 = c1.catchid
-                LEFT JOIN catch c2 ON r.catch2 = c2.catchid
-                LEFT JOIN catch c3 ON r.catch3 = c3.catchid
-                LEFT JOIN catch c4 ON r.catch4 = c4.catchid
-                LEFT JOIN catch c5 ON r.catch5 = c5.catchid
-                WHERE 
-                    (r.catch1 BETWEEN 2 AND 42 OR 
-                     r.catch2 BETWEEN 2 AND 42 OR 
-                     r.catch3 BETWEEN 2 AND 42 OR 
-                     r.catch4 BETWEEN 2 AND 42 OR 
-                     r.catch5 BETWEEN 2 AND 42)
-                GROUP BY species_name
-                ORDER BY total_volume DESC;
-            """)
-            species_ranking = cursor.fetchall()
-
-            # Query to fetch monthly species ranking by total catch volume with species name
-            cursor.execute("""
-                SELECT 
-                    year_data.period,
-                    year_data.species_name,
-                    year_data.total_volume,
-                    year_data.rank
+                    species_name,
+                    SUM(total_volume) AS total_volume
                 FROM (
                     SELECT 
-                        CASE WHEN EXTRACT(MONTH FROM r.`date`) IS NULL THEN 'Year' ELSE MONTHNAME(r.`date`) END AS period,
                         CASE 
-                            WHEN r.`catch1` BETWEEN 2 AND 42 THEN c1.name
-                            WHEN r.`catch2` BETWEEN 2 AND 42 THEN c2.name
-                            WHEN r.`catch3` BETWEEN 2 AND 42 THEN c3.name
-                            WHEN r.`catch4` BETWEEN 2 AND 42 THEN c4.name
-                            WHEN r.`catch5` BETWEEN 2 AND 42 THEN c5.name
+                            WHEN r.catch1 BETWEEN 2 AND 42 THEN c1.name
+                            WHEN r.catch2 BETWEEN 2 AND 42 THEN c2.name
+                            WHEN r.catch3 BETWEEN 2 AND 42 THEN c3.name
+                            WHEN r.catch4 BETWEEN 2 AND 42 THEN c4.name
+                            WHEN r.catch5 BETWEEN 2 AND 42 THEN c5.name
                         END AS species_name,
-                        SUM(CASE WHEN r.`catch1` BETWEEN 2 AND 42 THEN COALESCE(r.`volume1`, 0) ELSE 0 END) +
-                        SUM(CASE WHEN r.`catch2` BETWEEN 2 AND 42 THEN COALESCE(r.`volume2`, 0) ELSE 0 END) +
-                        SUM(CASE WHEN r.`catch3` BETWEEN 2 AND 42 THEN COALESCE(r.`volume3`, 0) ELSE 0 END) +
-                        SUM(CASE WHEN r.`catch4` BETWEEN 2 AND 42 THEN COALESCE(r.`volume4`, 0) ELSE 0 END) +
-                        SUM(CASE WHEN r.`catch5` BETWEEN 2 AND 42 THEN COALESCE(r.`volume5`, 0) ELSE 0 END) AS total_volume,
-                        ROW_NUMBER() OVER (
-                            PARTITION BY EXTRACT(YEAR FROM r.`date`), period 
-                            ORDER BY 
-                                SUM(CASE WHEN r.`catch1` BETWEEN 2 AND 42 THEN COALESCE(r.`volume1`, 0) ELSE 0 END) +
-                                SUM(CASE WHEN r.`catch2` BETWEEN 2 AND 42 THEN COALESCE(r.`volume2`, 0) ELSE 0 END) +
-                                SUM(CASE WHEN r.`catch3` BETWEEN 2 AND 42 THEN COALESCE(r.`volume3`, 0) ELSE 0 END) +
-                                SUM(CASE WHEN r.`catch4` BETWEEN 2 AND 42 THEN COALESCE(r.`volume4`, 0) ELSE 0 END) +
-                                SUM(CASE WHEN r.`catch5` BETWEEN 2 AND 42 THEN COALESCE(r.`volume5`, 0) ELSE 0 END) DESC
-                        ) AS rank
-                    FROM `report` r
+                        COALESCE(r.volume1, 0) + COALESCE(r.volume2, 0) +
+                        COALESCE(r.volume3, 0) + COALESCE(r.volume4, 0) +
+                        COALESCE(r.volume5, 0) AS total_volume
+                    FROM report r
                     LEFT JOIN catch c1 ON r.catch1 = c1.catchid
                     LEFT JOIN catch c2 ON r.catch2 = c2.catchid
                     LEFT JOIN catch c3 ON r.catch3 = c3.catchid
                     LEFT JOIN catch c4 ON r.catch4 = c4.catchid
                     LEFT JOIN catch c5 ON r.catch5 = c5.catchid
-                    WHERE 
-                        (r.catch1 BETWEEN 2 AND 42 OR 
-                         r.catch2 BETWEEN 2 AND 42 OR 
-                         r.catch3 BETWEEN 2 AND 42 OR 
-                         r.catch4 BETWEEN 2 AND 42 OR 
-                         r.catch5 BETWEEN 2 AND 42)
+                    WHERE r.catch1 BETWEEN 2 AND 42 OR
+                          r.catch2 BETWEEN 2 AND 42 OR
+                          r.catch3 BETWEEN 2 AND 42 OR
+                          r.catch4 BETWEEN 2 AND 42 OR
+                          r.catch5 BETWEEN 2 AND 42
+                ) AS subquery
+                GROUP BY species_name
+                ORDER BY total_volume DESC;
+            """)
+            species_ranking = cursor.fetchall()
+
+            # Query for monthly species ranking
+            cursor.execute("""
+                SELECT t1.period, t1.species_name, t1.total_volume
+                FROM (
+                    SELECT 
+                        DATE_FORMAT(r.date, '%Y-%m') AS period,
+                        CASE 
+                            WHEN r.catch1 BETWEEN 2 AND 42 THEN c1.name
+                            WHEN r.catch2 BETWEEN 2 AND 42 THEN c2.name
+                            WHEN r.catch3 BETWEEN 2 AND 42 THEN c3.name
+                            WHEN r.catch4 BETWEEN 2 AND 42 THEN c4.name
+                            WHEN r.catch5 BETWEEN 2 AND 42 THEN c5.name
+                        END AS species_name,
+                        SUM(COALESCE(r.volume1, 0) + COALESCE(r.volume2, 0) +
+                            COALESCE(r.volume3, 0) + COALESCE(r.volume4, 0) +
+                            COALESCE(r.volume5, 0)) AS total_volume
+                    FROM report r
+                    LEFT JOIN catch c1 ON r.catch1 = c1.catchid
+                    LEFT JOIN catch c2 ON r.catch2 = c2.catchid
+                    LEFT JOIN catch c3 ON r.catch3 = c3.catchid
+                    LEFT JOIN catch c4 ON r.catch4 = c4.catchid
+                    LEFT JOIN catch c5 ON r.catch5 = c5.catchid
+                    WHERE r.catch1 BETWEEN 2 AND 42 OR
+                          r.catch2 BETWEEN 2 AND 42 OR
+                          r.catch3 BETWEEN 2 AND 42 OR
+                          r.catch4 BETWEEN 2 AND 42 OR
+                          r.catch5 BETWEEN 2 AND 42
                     GROUP BY period, species_name
-                ) AS year_data
-                WHERE year_data.rank = 1
-                ORDER BY year_data.period;
+                ) t1
+                LEFT JOIN (
+                    SELECT 
+                        DATE_FORMAT(r.date, '%Y-%m') AS period,
+                        MAX(SUM(COALESCE(r.volume1, 0) + COALESCE(r.volume2, 0) +
+                                COALESCE(r.volume3, 0) + COALESCE(r.volume4, 0) +
+                                COALESCE(r.volume5, 0))) AS max_volume
+                    FROM report r
+                    LEFT JOIN catch c1 ON r.catch1 = c1.catchid
+                    LEFT JOIN catch c2 ON r.catch2 = c2.catchid
+                    LEFT JOIN catch c3 ON r.catch3 = c3.catchid
+                    LEFT JOIN catch c4 ON r.catch4 = c4.catchid
+                    LEFT JOIN catch c5 ON r.catch5 = c5.catchid
+                    WHERE r.catch1 BETWEEN 2 AND 42 OR
+                          r.catch2 BETWEEN 2 AND 42 OR
+                          r.catch3 BETWEEN 2 AND 42 OR
+                          r.catch4 BETWEEN 2 AND 42 OR
+                          r.catch5 BETWEEN 2 AND 42
+                    GROUP BY period
+                ) t2 ON t1.period = t2.period AND t1.total_volume = t2.max_volume
+                WHERE t2.max_volume IS NOT NULL
+                ORDER BY t1.period;
             """)
             species_rankings = cursor.fetchall()
 
             cursor.close()
             db.close()
 
-            # Pass both rankings to the template
             return render_template('admin_dashboard.html', species_ranking=species_ranking, species_rankings=species_rankings)
 
+        except pymysql.MySQLError as e:
+            print("Database error:", e)
+            flash("There was a database error.", "error")
+            return redirect(url_for("admin_login"))
         except Exception as e:
             print("Error:", e)
-            flash("There was an error loading the dashboard.", "error")
+            flash("An unexpected error occurred.", "error")
             return redirect(url_for("admin_login"))
     else:
         flash("Unauthorized access!", "error")
         return redirect(url_for("admin_login"))
+
 
 @app.route('/admin/visualization_page', methods=['GET', 'POST'])
 def visualization_page():
