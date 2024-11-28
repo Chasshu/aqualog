@@ -13,7 +13,7 @@ app.secret_key = "your_secret_key"  # Change this to your secret key
 
 # Database connection
 def connect_db():
-    return pymysql.connect(host='localhost', user='root', password='', database='aqualog')
+    return pymysql.connect(host='sql12.freesqldatabase.com', user='sql12747991', password='FGUrVzuy7A', database='sql12747991')
 
 # Function to sanitize input data<input type="password" name="password" placeholder="Password" required>
 def validate(data):
