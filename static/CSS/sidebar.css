@@ -70,6 +70,13 @@ body {
     font-weight: bold;
 }
 
+.navbar a img.icon {
+    width: 20px; /* Adjust the size of icons */
+    height: 20px;
+    margin-right: 10px; /* Space between icon and text */
+    transition: transform 0.3s ease-in-out;
+}
+
 .sidebar.collapsed .navbar a {
     justify-content: center;
     padding: 15px 0;
@@ -77,6 +84,10 @@ body {
 
 .sidebar.collapsed .navbar a span {
     display: none;
+}
+
+.sidebar.collapsed .navbar a img.icon {
+    margin-right: 0;
 }
 
 .main-content {
@@ -96,6 +107,7 @@ iframe.content-frame {
 }
 
 /* Toggle Button Styles */
+/* Toggle Button Styles */
 .toggle-btn {
     background: transparent;
     border: none;
@@ -109,9 +121,18 @@ iframe.content-frame {
     transition: transform 0.3s ease-in-out;
 }
 
+/* Image inside the toggle button */
+.toggle-btn img {
+    width: 20px;  /* Set a fixed width */
+    height: 20px; /* Set a fixed height */
+    max-width: 100%;  /* Ensure it doesn't overflow */
+    max-height: 100%;
+    object-fit: contain;  /* Ensure the icon fits inside the container without stretching */
+}
+
 /* Optional: Add hover and focus effects */
 .toggle-btn:hover {
-    color: #aad8b0; /
+    color: #aad8b0;
 }
 
 .toggle-btn:focus {
@@ -119,11 +140,7 @@ iframe.content-frame {
 }
 
 /* Sidebar Collapsed Icon Rotation */
-.sidebar.collapsed .toggle-btn i {
+.sidebar.collapsed .toggle-btn img {
     transform: rotate(180deg);
 }
 
-/* Icon Size Adjustment */
-.toggle-btn i {
-    font-size: 1.5rem;
-}

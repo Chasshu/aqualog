@@ -65,3 +65,9 @@ button a {
 input::placeholder {
     color: #aaa;
 }
+
+
+.red{
+    background-color: red;
+    color: white;
+}
