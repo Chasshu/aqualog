@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
     <script>
-        // Password validation script
+        // Password validation and visibility toggle
         document.addEventListener("DOMContentLoaded", function () {
             const form = document.querySelector("form");
             const passwordInput = form.querySelector('input[name="password"]');
@@ -15,6 +15,24 @@
             message.id = "passwordMessage";
             passwordInput.insertAdjacentElement("afterend", message);
 
+            // Add show/hide password toggle
+            const toggleButton = document.createElement("button");
+            toggleButton.type = "button";
+            toggleButton.textContent = "Show";
+            toggleButton.style.marginLeft = "10px";
+            passwordInput.insertAdjacentElement("afterend", toggleButton);
+
+            toggleButton.addEventListener("click", function () {
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    toggleButton.textContent = "Hide";
+                } else {
+                    passwordInput.type = "password";
+                    toggleButton.textContent = "Show";
+                }
+            });
+
+            // Password validation
             form.addEventListener("submit", function (event) {
                 const password = passwordInput.value;
 
