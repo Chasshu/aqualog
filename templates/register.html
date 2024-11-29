@@ -6,55 +6,60 @@
     <link rel="stylesheet" href="{{url_for('static', filename='CSS/Register.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
+    <style>
+        
+        .password-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-container input[type="password"],
+        .password-container input[type="text"] {
+            width: 100%;
+            padding-right: 40px; /* Space for the eye icon */
+            box-sizing: border-box;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+        }
+
+        .password-toggle svg {
+            fill: #555;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
     <script>
-        // Password validation and visibility toggle
+        // Password visibility toggle
         document.addEventListener("DOMContentLoaded", function () {
-            const form = document.querySelector("form");
-            const passwordInput = form.querySelector('input[name="password"]');
-            const message = document.createElement("p");
-            message.id = "passwordMessage";
-            passwordInput.insertAdjacentElement("afterend", message);
+            const toggleIcon = document.querySelector(".password-toggle");
+            const passwordInput = document.querySelector('input[name="password"]');
+            let isPasswordVisible = false;
 
-            // Add show/hide password toggle
-            const toggleButton = document.createElement("button");
-            toggleButton.type = "button";
-            toggleButton.textContent = "Show";
-            toggleButton.style.marginLeft = "10px";
-            passwordInput.insertAdjacentElement("afterend", toggleButton);
-
-            toggleButton.addEventListener("click", function () {
-                if (passwordInput.type === "password") {
+            toggleIcon.addEventListener("click", function () {
+                isPasswordVisible = !isPasswordVisible;
+                if (isPasswordVisible) {
                     passwordInput.type = "text";
-                    toggleButton.textContent = "Hide";
+                    toggleIcon.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 5c-7.1 0-12 7-12 7s4.9 7 12 7 12-7 12-7-4.9-7-12-7zm0 12c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/>
+                        </svg>
+                    `; // Eye-slash SVG (Hide)
                 } else {
                     passwordInput.type = "password";
-                    toggleButton.textContent = "Show";
+                    toggleIcon.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 5c-7.1 0-12 7-12 7s4.9 7 12 7 12-7 12-7-4.9-7-12-7zm0 12c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z"/>
+                        </svg>
+                    `; // Eye SVG (Show)
                 }
-            });
-
-            // Password validation
-            form.addEventListener("submit", function (event) {
-                const password = passwordInput.value;
-
-                // Check length
-                if (password.length < 8 || password.length > 16) {
-                    message.textContent = "Password must be between 8 and 16 characters.";
-                    message.style.color = "red";
-                    event.preventDefault(); // Stop form submission
-                    return;
-                }
-
-                // Check for alphanumeric characters
-                const alphanumericRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+$/;
-                if (!alphanumericRegex.test(password)) {
-                    message.textContent = "Password must contain both letters and numbers.";
-                    message.style.color = "red";
-                    event.preventDefault(); // Stop form submission
-                    return;
-                }
-
-                // Clear message if valid
-                message.textContent = "";
             });
         });
     </script>
@@ -65,7 +70,15 @@
         <h1>Register</h1>
         <form method="POST">
             <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
+            <div class="password-container">
+                <input type="password" name="password" placeholder="Password" required>
+                <span class="password-toggle">
+                    <!-- Default SVG for "eye" (password hidden) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 5c-7.1 0-12 7-12 7s4.9 7 12 7 12-7 12-7-4.9-7-12-7zm0 12c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z"/>
+                    </svg>
+                </span>
+            </div>
             <input type="text" name="vessel_name" placeholder="Vessel Name" required>
             <input type="text" name="reg_number" placeholder="Registration Number" required>
             <input type="text" name="contact" placeholder="Contact Number" required>
