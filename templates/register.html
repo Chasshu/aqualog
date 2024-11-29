@@ -5,12 +5,44 @@
     <title>Register</title>
     <link rel="stylesheet" href="{{url_for('static', filename='CSS/Register.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
     <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
+    <script>
+        // Password validation script
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector("form");
+            const passwordInput = form.querySelector('input[name="password"]');
+            const message = document.createElement("p");
+            message.id = "passwordMessage";
+            passwordInput.insertAdjacentElement("afterend", message);
 
+            form.addEventListener("submit", function (event) {
+                const password = passwordInput.value;
+
+                // Check length
+                if (password.length < 8 || password.length > 16) {
+                    message.textContent = "Password must be between 8 and 16 characters.";
+                    message.style.color = "red";
+                    event.preventDefault(); // Stop form submission
+                    return;
+                }
+
+                // Check for alphanumeric characters
+                const alphanumericRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+$/;
+                if (!alphanumericRegex.test(password)) {
+                    message.textContent = "Password must contain both letters and numbers.";
+                    message.style.color = "red";
+                    event.preventDefault(); // Stop form submission
+                    return;
+                }
+
+                // Clear message if valid
+                message.textContent = "";
+            });
+        });
+    </script>
 </head>
 <body>
-    <div class="register-container"> 
+    <div class="register-container">
         <img src="{{url_for('static', filename='Assets/logo.png') }}" alt="Logo">
         <h1>Register</h1>
         <form method="POST">
