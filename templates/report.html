@@ -25,13 +25,15 @@
                     <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
                 {% endfor %}
             </select>
-            
+            <input type="text" name="volume1" placeholder="Volume 1" required>
+
             <select name="catch2" required>
                 <option value="" disabled selected hidden>Choose Species</option>
                 {% for item in catch %}
                     <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
                 {% endfor %}
             </select>
+            <input type="text" name="volume2" placeholder="Volume 2" required>
             
             <select name="catch3" required>
                 <option value="" disabled selected hidden>Choose Species</option>
@@ -39,6 +41,7 @@
                     <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
                 {% endfor %}
             </select>
+            <input type="text" name="volume3" placeholder="Volume 3" required>
             
             <select name="catch4" required>
                 <option value="" disabled selected hidden>Choose Species</option>
@@ -46,6 +49,7 @@
                     <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
                 {% endfor %}
             </select>
+            <input type="text" name="volume4" placeholder="Volume 4" required>
             
             <select name="catch5" required>
                 <option value="" disabled selected hidden>Choose Species</option>
@@ -53,12 +57,6 @@
                     <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
                 {% endfor %}
             </select>
-            
-            
-            <input type="text" name="volume1" placeholder="Volume 1" required>
-            <input type="text" name="volume2" placeholder="Volume 2" required>
-            <input type="text" name="volume3" placeholder="Volume 3" required>
-            <input type="text" name="volume4" placeholder="Volume 4" required>
             <input type="text" name="volume5" placeholder="Volume 5" required>
             
             <select name="site" required>
