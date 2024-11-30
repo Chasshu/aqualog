@@ -109,9 +109,8 @@ input::placeholder {
 }
 
 .modal-icon {
-    height: 50px;
-    width: 50px;
-    object-fit: cover;
+    font-size: 50px;
+    color: #b71c1c;
 }
 
 .modal-body h3 {
@@ -135,4 +134,12 @@ input::placeholder {
 
 .ok-button:hover {
     background-color: #444;
+}
+
+/* Error Message Style */
+#error-message {
+    display: none;
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
 }

@@ -96,22 +96,46 @@
     <div id="modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <img class="modal-icon" src="{{ url_for('static', filename='Assets/modal.svg') }}">
+                <span class="modal-icon">❗</span>
             </div>
             <div class="modal-body">
                 <h3>Your report is submitted!</h3>
-                <p>Your report will be validated.</p>
+                <p>Please wait for approval.</p>
             </div>
             <div class="modal-footer">
                 <button id="closeButton" class="ok-button">OK</button>
             </div>
         </div>
     </div>
-
+    
     <script>
         document.getElementById('submitButton').addEventListener('click', function (e) {
             e.preventDefault(); // Prevent form submission
-            document.getElementById('modal').style.display = 'flex';
+
+            // Validate required fields
+            const form = document.getElementById('reportForm');
+            const requiredFields = form.querySelectorAll('input[required], select[required]');
+            let allFieldsValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    allFieldsValid = false;
+                    field.style.border = '2px solid red'; // Highlight empty fields
+                } else {
+                    field.style.border = ''; // Reset the border for filled fields
+                }
+            });
+
+            const errorMessage = document.getElementById('error-message');
+
+            // Show appropriate message
+            if (allFieldsValid) {
+                errorMessage.style.display = 'none'; // Hide error message
+                document.getElementById('modal').style.display = 'flex'; // Show modal
+            } else {
+                errorMessage.textContent = 'Please fill up all fields first before submitting.';
+                errorMessage.style.display = 'block'; // Display error message
+            }
         });
 
         document.getElementById('closeButton').addEventListener('click', function () {
