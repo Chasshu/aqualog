@@ -862,15 +862,16 @@ def export_pdf(report_id):
         db = connect_db()
         cursor = db.cursor(pymysql.cursors.DictCursor)
 
+        # Query to fetch report details
         query = """
             SELECT 
-                r.reportid, r.name, r.vessel, r.frequent, 
-                DATE_FORMAT(r.date, '%%Y-%%m-%%d') AS date,  -- Escaped %% characters
-                c1.name AS catch1_name, c2.name AS catch2_name, 
-                c3.name AS catch3_name, c4.name AS catch4_name, c5.name AS catch5_name,
-                r.volume1, r.volume2, r.volume3, r.volume4, r.volume5,
-                s.name AS site_name, g.name AS gear_name, r.hours,
-                l.name AS landing_name, r.price
+            r.reportid, r.name, r.vessel, r.frequent, 
+            DATE_FORMAT(r.date, '%%Y-%%m-%%d') AS date,
+            c1.name AS catch1_name, c2.name AS catch2_name, 
+            c3.name AS catch3_name, c4.name AS catch4_name, c5.name AS catch5_name,
+            r.volume1, r.volume2, r.volume3, r.volume4, r.volume5,
+            s.name AS site_name, g.name AS gear_name, r.hours,
+            l.name AS landing_name, r.price
             FROM report r
             LEFT JOIN catch c1 ON r.catch1 = c1.catchid
             LEFT JOIN catch c2 ON r.catch2 = c2.catchid
@@ -890,16 +891,39 @@ def export_pdf(report_id):
             flash("Report not found.", "error")
             return redirect(url_for('view_reports'))
 
-        # Generate PDF
+        # Create PDF
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font('Arial', 'B', 16)
         pdf.cell(0, 10, 'Report Details', 0, 1, 'C')
         pdf.set_font('Arial', '', 12)
 
-        # Add report details to the PDF
-        for key, value in report.items():
-            pdf.cell(0, 10, f"{key.capitalize()}: {value}", 0, 1)
+        # General Report Information
+        pdf.cell(0, 10, f"Report ID: {report['reportid']}", 0, 1)
+        pdf.cell(0, 10, f"Name: {report['name']}", 0, 1)
+        pdf.cell(0, 10, f"Vessel: {report['vessel']}", 0, 1)
+        pdf.cell(0, 10, f"Date: {report['date']}", 0, 1)
+        pdf.cell(0, 10, f"Site: {report['site_name']}", 0, 1)
+        pdf.cell(0, 10, f"Gear: {report['gear_name']}", 0, 1)
+        pdf.cell(0, 10, f"Landing: {report['landing_name']}", 0, 1)
+
+        # Add Table Header
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(60, 10, 'Catch', 1, 0, 'C')
+        pdf.cell(60, 10, 'Volume', 1, 0, 'C')
+        pdf.cell(60, 10, 'Price', 1, 1, 'C')
+
+        # Add Table Rows
+        pdf.set_font('Arial', '', 12)
+        for i in range(1, 6):  # Iterate through Catch1 to Catch5
+            catch = report.get(f'catch{i}_name', 'N/A')
+            volume = report.get(f'volume{i}', 'N/A')
+            price = f"${report['price']:.2f}" if report['price'] else "N/A"
+
+            if catch != 'N/A':  # Add only non-empty catches
+                pdf.cell(60, 10, str(catch), 1, 0, 'C')
+                pdf.cell(60, 10, str(volume), 1, 0, 'C')
+                pdf.cell(60, 10, price, 1, 1, 'C')
 
         # Ensure the output directory exists
         output_dir = 'generated_reports'
