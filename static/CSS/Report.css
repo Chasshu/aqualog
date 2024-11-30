@@ -68,7 +68,7 @@ input::placeholder {
 
 
 .red{
-    opacity: 0.5;
+    background-color: red;
     color: white;
 }
 .red:hover{
