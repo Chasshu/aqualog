@@ -5,15 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report</title>
     <link rel="stylesheet" href="{{url_for('static', filename='CSS/Report.css') }}">
+
+    <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
+    
 </head>
 <body>
     <div class="container">
         <h1>Report</h1>
-        <form method="POST">
+        <form method="POST" id="reportForm">
             <input type="text" name="name" placeholder="Name" required>
             <input type="text" name="vessel" placeholder="Vessel" required>
-            <input type="text" name="regnumber" placeholder="Registration Number" required>
-            <input type="text" name="contact" placeholder="Contact" required>
+            <input type="number" name="regnumber" placeholder="Registration Number" required>
+            <input type="number" name="contact" placeholder="Contact Number" maxlength="11" pattern=".{11}" required>
             <input type="text" name="frequent" placeholder="Frequent" required>
             <input type="date" name="date" required>
             
@@ -23,13 +26,15 @@
                     <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
                 {% endfor %}
             </select>
-            
+            <input type="number" name="volume1" placeholder="Volume 1" required>
+
             <select name="catch2" required>
                 <option value="" disabled selected hidden>Choose Species</option>
                 {% for item in catch %}
                     <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
                 {% endfor %}
             </select>
+            <input type="number" name="volume2" placeholder="Volume 2" required>
             
             <select name="catch3" required>
                 <option value="" disabled selected hidden>Choose Species</option>
@@ -37,6 +42,7 @@
                     <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
                 {% endfor %}
             </select>
+            <input type="number" name="volume3" placeholder="Volume 3" required>
             
             <select name="catch4" required>
                 <option value="" disabled selected hidden>Choose Species</option>
@@ -44,6 +50,7 @@
                     <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
                 {% endfor %}
             </select>
+            <input type="number" name="volume4" placeholder="Volume 4" required>
             
             <select name="catch5" required>
                 <option value="" disabled selected hidden>Choose Species</option>
@@ -51,13 +58,7 @@
                     <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
                 {% endfor %}
             </select>
-            
-            
-            <input type="text" name="volume1" placeholder="Volume 1" required>
-            <input type="text" name="volume2" placeholder="Volume 2" required>
-            <input type="text" name="volume3" placeholder="Volume 3" required>
-            <input type="text" name="volume4" placeholder="Volume 4" required>
-            <input type="text" name="volume5" placeholder="Volume 5" required>
+            <input type="number" name="volume5" placeholder="Volume 5" required>
             
             <select name="site" required>
                 <option value="" disabled selected hidden>Site</option>
@@ -79,10 +80,11 @@
                 {% endfor %}
             </select>
             <input type="text" name="price" placeholder="Price" required>
-            
-            <button type="submit" name="submit">Proceed</button>
+
+            <button type="button" id="submitButton">Proceed</button>
+            <p id="error-message"></p>
         </form>
-        
+
         <button type="button">
             <a href="{{ url_for('my_reports') }}">My Reports</a>
         </button>
@@ -90,5 +92,59 @@
             <a href="{{ url_for('logout') }}">Logout</a>
         </button>
     </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img class="modal-icon" src="{{ url_for('static', filename='Assets/form.svg') }}">
+            </div>
+            <div class="modal-body">
+                <h3>Your report is submitted!</h3>
+                <p>Please wait for approval.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="closeButton" class="ok-button">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('submitButton').addEventListener('click', function (e) {
+            // Prevent default button behavior
+            e.preventDefault();
+
+            // Validate required fields
+            const form = document.getElementById('reportForm');
+            const requiredFields = form.querySelectorAll('input[required], select[required]');
+            let allFieldsValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    allFieldsValid = false;
+                    field.style.border = '2px solid red'; // Highlight empty fields
+                } else {
+                    field.style.border = ''; // Reset the border for filled fields
+                }
+            });
+
+            const errorMessage = document.getElementById('error-message');
+
+            // Show modal if all fields are valid
+            if (allFieldsValid) {
+                errorMessage.style.display = 'none'; // Hide error message
+                document.getElementById('modal').style.display = 'flex'; // Show modal
+            } else {
+                errorMessage.textContent = 'Please fill up all fields first before submitting.';
+                errorMessage.style.display = 'block'; // Show error message
+            }
+        });
+
+        document.getElementById('closeButton').addEventListener('click', function () {
+            const form = document.getElementById('reportForm');
+            document.getElementById('modal').style.display = 'none'; // Hide modal
+            form.submit(); // Submit the form
+        });
+    </script>
 </body>
 </html>

@@ -316,6 +316,95 @@ def delete_report(reportid):
         flash("Unauthorized access!", "error")
         return redirect(url_for("login"))
 
+# Pending Users Page
+@app.route('/pending_users')
+def pending_users():
+    if 'id' in session and session['role'] == 'admin':
+        db = connect_db()
+        cursor = db.cursor(pymysql.cursors.DictCursor)
+        
+        # Fetch all pending users
+        cursor.execute("SELECT userid, username, password, vessel_name, reg_number, contact FROM user_temp")
+        users = cursor.fetchall()
+        db.close()
+        
+        return render_template('pending_users.html', users=users)
+    else:
+        flash("Unauthorized access!", "error")
+        return redirect(url_for("login"))
+
+
+# Approving a pending user
+@app.route('/approve_user/<int:userid>', methods=['POST'])
+def approve_user(userid):
+    if 'id' in session and session['role'] == 'admin':
+        db = connect_db()
+        cursor = db.cursor(pymysql.cursors.DictCursor)
+
+        try:
+            # Fetch the user from `user_temp`
+            cursor.execute("SELECT * FROM user_temp WHERE userid = %s", (userid,))
+            user = cursor.fetchone()
+
+            if user:
+                # Insert the user into the `user` table
+                sql_insert_user = """
+                    INSERT INTO user (userid, username, password, vessel_name, reg_number, contact) 
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """
+                cursor.execute(sql_insert_user, (
+                    user['userid'], user['username'], user['password'],
+                    user['vessel_name'], user['reg_number'], user['contact']
+                ))
+
+                # Delete the user from `user_temp`
+                cursor.execute("DELETE FROM user_temp WHERE userid = %s", (userid,))
+                db.commit()
+
+                flash("User approved and moved to the user table successfully!", "success")
+            else:
+                flash("User not found!", "error")
+
+        except Exception as e:
+            db.rollback()
+            app.logger.error(f"Error approving user ID {userid}: {str(e)}")
+            flash(f"Error while approving user: {str(e)}", "error")
+
+        finally:
+            db.close()
+
+        return redirect(url_for("pending_users"))
+    else:
+        flash("Unauthorized access!", "error")
+        return redirect(url_for("login"))
+
+
+# Deleting a pending user
+@app.route('/delete_user/<int:userid>', methods=['POST'])
+def delete_user(userid):
+    if 'id' in session and session['role'] == 'admin':
+        db = connect_db()
+        cursor = db.cursor(pymysql.cursors.DictCursor)
+
+        try:
+            # Delete the user from the `user_temp` table
+            cursor.execute("DELETE FROM user_temp WHERE userid = %s", (userid,))
+            db.commit()
+
+            flash("User deleted successfully!", "success")
+        except Exception as e:
+            db.rollback()
+            app.logger.error(f"Error deleting user ID {userid}: {str(e)}")
+            flash(f"Error while deleting user: {str(e)}", "error")
+
+        finally:
+            db.close()
+
+        return redirect(url_for("pending_users"))
+    else:
+        flash("Unauthorized access!", "error")
+        return redirect(url_for("login"))
+
 
 #forgot password
 @app.route('/forgot_password', methods=['GET', 'POST'])
@@ -406,7 +495,7 @@ def register():
         db = connect_db()
         cursor = db.cursor()
         try:
-            cursor.execute("INSERT INTO user (username, password,vessel_name, reg_number,contact) VALUES (%s, %s,%s, %s, %s)", (username, password, vessel_name, reg_number, contact))
+            cursor.execute("INSERT INTO user_temp (username, password,vessel_name, reg_number,contact) VALUES (%s, %s,%s, %s, %s)", (username, password, vessel_name, reg_number, contact))
             db.commit()
             return redirect(url_for('login'))
         except Exception as e:
@@ -883,7 +972,7 @@ def export_pdf(report_id):
                 c1.name AS catch1_name, c2.name AS catch2_name, 
                 c3.name AS catch3_name, c4.name AS catch4_name, c5.name AS catch5_name,
                 r.volume1, r.volume2, r.volume3, r.volume4, r.volume5,
-                r.price1, r.price2, r.price3, r.price4, r.price5,
+                r.price1, r.price2, r.price3, r.price4, r.price5,  -- Include new price fields
                 s.name AS site_name, g.name AS gear_name, r.hours,
                 l.name AS landing_name
             FROM report r
@@ -908,46 +997,43 @@ def export_pdf(report_id):
         # Generate PDF
         pdf = FPDF()
         pdf.add_page()
-
-        # Title
         pdf.set_font('Arial', 'B', 16)
         pdf.cell(0, 10, 'Report Details', 0, 1, 'C')
-        pdf.ln(10)
-
-        # General Details Section
         pdf.set_font('Arial', '', 12)
+
+        # Add general report details
         general_details = [
             ("Report ID", report["reportid"]),
             ("Name", report["name"]),
             ("Vessel", report["vessel"]),
+            ("Frequent", report["frequent"]),
             ("Date", report["date"]),
             ("Site", report["site_name"]),
             ("Gear", report["gear_name"]),
             ("Landing", report["landing_name"]),
+            ("Hours", report["hours"]),
         ]
-        for field_name, value in general_details:
-            pdf.cell(50, 10, f"{field_name}:", 0, 0)
-            pdf.cell(0, 10, str(value), 0, 1)
-        pdf.ln(10)
 
-        # Catch, Volume, and Price Table
+        for label, value in general_details:
+            pdf.cell(0, 10, f"{label}: {value}", 0, 1)
+
+        # Add table for catches, volumes, and prices
+        pdf.cell(0, 10, '', 0, 1)  # Add space before table
         pdf.set_font('Arial', 'B', 12)
-        pdf.cell(60, 10, "Catch", 1, 0, 'C')
-        pdf.cell(40, 10, "Volume", 1, 0, 'C')
-        pdf.cell(40, 10, "Price", 1, 1, 'C')
+        pdf.cell(50, 10, "Catch", 1)
+        pdf.cell(30, 10, "Volume", 1)
+        pdf.cell(30, 10, "Price", 1)
+        pdf.ln()
 
         pdf.set_font('Arial', '', 12)
-        catch_details = [
-            (report["catch1_name"], report["volume1"], report["price1"]),
-            (report["catch2_name"], report["volume2"], report["price2"]),
-            (report["catch3_name"], report["volume3"], report["price3"]),
-            (report["catch4_name"], report["volume4"], report["price4"]),
-            (report["catch5_name"], report["volume5"], report["price5"]),
-        ]
-        for catch, volume, price in catch_details:
-            pdf.cell(60, 10, str(catch), 1, 0, 'C')
-            pdf.cell(40, 10, str(volume), 1, 0, 'C')
-            pdf.cell(40, 10, f"${price:.2f}" if price else "-", 1, 1, 'C')
+        for i in range(1, 6):  # Loop through catches 1 to 5
+            catch_name = report.get(f"catch{i}_name", "N/A")
+            volume = report.get(f"volume{i}", 0)
+            price = report.get(f"price{i}", 0.0)
+            pdf.cell(50, 10, catch_name if catch_name else "N/A", 1)
+            pdf.cell(30, 10, str(volume), 1)
+            pdf.cell(30, 10, f"{price:.2f}/Kilo", 1)
+            pdf.ln()
 
         # Ensure the output directory exists
         output_dir = 'generated_reports'
