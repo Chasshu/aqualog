@@ -140,7 +140,7 @@ def viewreport(reportid):
         db = connect_db()
         cursor = db.cursor(pymysql.cursors.DictCursor)
         
-        # Updated query to fetch names instead of IDs
+        # Updated query to fetch names and prices
         cursor.execute("""
             SELECT 
                 rt.reportid,
@@ -157,11 +157,15 @@ def viewreport(reportid):
                 rt.volume3,
                 rt.volume4,
                 rt.volume5,
+                rt.price1,
+                rt.price2,
+                rt.price3,
+                rt.price4,
+                rt.price5,
                 s.name AS site_name,
                 g.name AS gear_name,
                 rt.hours,
-                l.name AS landing_name,
-                rt.price
+                l.name AS landing_name
             FROM report_temp rt
             LEFT JOIN catch c1 ON rt.catch1 = c1.catchid
             LEFT JOIN catch c2 ON rt.catch2 = c2.catchid
@@ -204,8 +208,10 @@ def approvereport(reportid):
                     INSERT INTO report (userid, name, vessel, frequent, date, 
                                         catch1, catch2, catch3, catch4, catch5, 
                                         volume1, volume2, volume3, volume4, volume5, 
-                                        site, gear, hours, landing, price, tempid)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                                        price1, price2, price3, price4, price5,
+                                        site, gear, hours, landing, tempid)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
+                            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """
 
                 # Create a tuple of values to insert, including `tempid`
@@ -219,10 +225,11 @@ def approvereport(reportid):
                     report['catch4'], report['catch5'],  # Ensure these are int
                     report['volume1'], report['volume2'], report['volume3'], 
                     report['volume4'], report['volume5'],  # Ensure these are int
+                    report['price1'], report['price2'], report['price3'], 
+                    report['price4'], report['price5'],  # Ensure these are int or float
                     report['site'], report['gear'],  # Ensure these are int
                     report['hours'],  # Ensure this is int
                     report['landing'],  # Ensure this is int
-                    report['price'],  # Ensure this is int or float
                     report['reportid']  # This becomes tempid
                 )
 
@@ -439,9 +446,9 @@ def report():
                         (`userid`, `name`, `vessel`, `frequent`, `date`, 
                          `catch1`, `catch2`, `catch3`, `catch4`, `catch5`, 
                          `volume1`, `volume2`, `volume3`, `volume4`, `volume5`, 
-                         `site`, `gear`, `hours`, `landing`, `price`) 
+                         `site`, `gear`, `hours`, `landing`, `price1`, `price2`, `price3`, `price4`, `price5`) 
                      VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
-                             %s, %s, %s, %s, %s, %s, %s, %s)"""
+                             %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)"""
 
             # Bind values from the form
             values = (
@@ -452,7 +459,8 @@ def report():
                 request.form["volume1"], request.form["volume2"], request.form["volume3"], 
                 request.form["volume4"], request.form["volume5"], request.form["site"], 
                 request.form["gear"], request.form["hours"], request.form["landing"], 
-                request.form["price"]
+                request.form["price1"], request.form["price2"], request.form["price3"],
+                request.form["price4"], request.form["price5"],
             )
 
             # Log values for debugging
@@ -799,7 +807,7 @@ def export_reports():
         db = connect_db()
         cursor = db.cursor(pymysql.cursors.DictCursor)
 
-        # Updated SQL query with formatted date
+        # Updated SQL query with new price fields and formatted date
         cursor.execute("""
             SELECT 
                 r.reportid, r.name, r.vessel, r.frequent, 
@@ -807,8 +815,9 @@ def export_reports():
                 c1.name AS catch1_name, c2.name AS catch2_name, 
                 c3.name AS catch3_name, c4.name AS catch4_name, c5.name AS catch5_name,
                 r.volume1, r.volume2, r.volume3, r.volume4, r.volume5,
+                r.price1, r.price2, r.price3, r.price4, r.price5,  -- Include new price fields
                 s.name AS site_name, g.name AS gear_name, r.hours,
-                l.name AS landing_name, r.price
+                l.name AS landing_name
             FROM report r
             LEFT JOIN catch c1 ON r.catch1 = c1.catchid
             LEFT JOIN catch c2 ON r.catch2 = c2.catchid
@@ -830,7 +839,8 @@ def export_reports():
                 "Report ID", "Name", "Vessel", "Frequent", "Date", 
                 "Catch1", "Catch2", "Catch3", "Catch4", "Catch5",
                 "Volume1", "Volume2", "Volume3", "Volume4", "Volume5",
-                "Site", "Gear", "Hours", "Landing", "Price"
+                "Price1", "Price2", "Price3", "Price4", "Price5",  # Updated to include all price fields
+                "Site", "Gear", "Hours", "Landing"
             ]
             yield ','.join(header) + '\n'
 
@@ -844,8 +854,10 @@ def export_reports():
                     report["catch4_name"], report["catch5_name"],
                     report["volume1"], report["volume2"], report["volume3"], 
                     report["volume4"], report["volume5"],
+                    report["price1"], report["price2"], report["price3"], 
+                    report["price4"], report["price5"],  # Include all price fields in the output
                     report["site_name"], report["gear_name"], report["hours"], 
-                    report["landing_name"], report["price"]
+                    report["landing_name"]
                 ]
                 # Convert all row values to strings and join with commas
                 yield ','.join(map(str, row)) + '\n'
@@ -855,22 +867,25 @@ def export_reports():
     else:
         flash("Unauthorized access!", "error")
         return redirect(url_for("login"))
-    
+
+#Route for export to pdf    
 @app.route('/admin/export_pdf/<int:report_id>')
 def export_pdf(report_id):
     if 'id' in session and session['role'] == 'admin':
         db = connect_db()
         cursor = db.cursor(pymysql.cursors.DictCursor)
 
+        # Updated SQL query to include price1 through price5
         query = """
             SELECT 
                 r.reportid, r.name, r.vessel, r.frequent, 
-                DATE_FORMAT(r.date, '%%Y-%%m-%%d') AS date,  -- Escaped %% characters
+                DATE_FORMAT(r.date, '%%Y-%%m-%%d') AS date,
                 c1.name AS catch1_name, c2.name AS catch2_name, 
                 c3.name AS catch3_name, c4.name AS catch4_name, c5.name AS catch5_name,
                 r.volume1, r.volume2, r.volume3, r.volume4, r.volume5,
+                r.price1, r.price2, r.price3, r.price4, r.price5,
                 s.name AS site_name, g.name AS gear_name, r.hours,
-                l.name AS landing_name, r.price
+                l.name AS landing_name
             FROM report r
             LEFT JOIN catch c1 ON r.catch1 = c1.catchid
             LEFT JOIN catch c2 ON r.catch2 = c2.catchid
@@ -893,13 +908,46 @@ def export_pdf(report_id):
         # Generate PDF
         pdf = FPDF()
         pdf.add_page()
+
+        # Title
         pdf.set_font('Arial', 'B', 16)
         pdf.cell(0, 10, 'Report Details', 0, 1, 'C')
-        pdf.set_font('Arial', '', 12)
+        pdf.ln(10)
 
-        # Add report details to the PDF
-        for key, value in report.items():
-            pdf.cell(0, 10, f"{key.capitalize()}: {value}", 0, 1)
+        # General Details Section
+        pdf.set_font('Arial', '', 12)
+        general_details = [
+            ("Report ID", report["reportid"]),
+            ("Name", report["name"]),
+            ("Vessel", report["vessel"]),
+            ("Date", report["date"]),
+            ("Site", report["site_name"]),
+            ("Gear", report["gear_name"]),
+            ("Landing", report["landing_name"]),
+        ]
+        for field_name, value in general_details:
+            pdf.cell(50, 10, f"{field_name}:", 0, 0)
+            pdf.cell(0, 10, str(value), 0, 1)
+        pdf.ln(10)
+
+        # Catch, Volume, and Price Table
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(60, 10, "Catch", 1, 0, 'C')
+        pdf.cell(40, 10, "Volume", 1, 0, 'C')
+        pdf.cell(40, 10, "Price", 1, 1, 'C')
+
+        pdf.set_font('Arial', '', 12)
+        catch_details = [
+            (report["catch1_name"], report["volume1"], report["price1"]),
+            (report["catch2_name"], report["volume2"], report["price2"]),
+            (report["catch3_name"], report["volume3"], report["price3"]),
+            (report["catch4_name"], report["volume4"], report["price4"]),
+            (report["catch5_name"], report["volume5"], report["price5"]),
+        ]
+        for catch, volume, price in catch_details:
+            pdf.cell(60, 10, str(catch), 1, 0, 'C')
+            pdf.cell(40, 10, str(volume), 1, 0, 'C')
+            pdf.cell(40, 10, f"${price:.2f}" if price else "-", 1, 1, 'C')
 
         # Ensure the output directory exists
         output_dir = 'generated_reports'
@@ -913,6 +961,7 @@ def export_pdf(report_id):
     else:
         flash("Unauthorized access!", "error")
         return redirect(url_for("login"))
+
 
     
 if __name__ == '__main__':
