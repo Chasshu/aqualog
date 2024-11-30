@@ -7,11 +7,12 @@
     <link rel="stylesheet" href="{{url_for('static', filename='CSS/Report.css') }}">
 
     <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
+
 </head>
 <body>
     <div class="container">
         <h1>Report</h1>
-        <form method="POST">
+        <form method="POST" id="reportForm">
             <input type="text" name="name" placeholder="Name" required>
             <input type="text" name="vessel" placeholder="Vessel" required>
             <input type="text" name="regnumber" placeholder="Registration Number" required>
@@ -80,7 +81,7 @@
             </select>
             <input type="text" name="price" placeholder="Price" required>
             
-            <button type="submit" name="submit">Proceed</button>
+            <button type="button" id="submitButton">Proceed</button>
         </form>
         
         <button type="button">
@@ -90,5 +91,33 @@
             <a href="{{ url_for('logout') }}">Logout</a>
         </button>
     </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img class="modal-icon" src="{{ url_for('static', filename='Assets/modal.svg') }}">
+            </div>
+            <div class="modal-body">
+                <h3>Your report is submitted!</h3>
+                <p>Your report will be validated.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="closeButton" class="ok-button">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('submitButton').addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent form submission
+            document.getElementById('modal').style.display = 'flex';
+        });
+
+        document.getElementById('closeButton').addEventListener('click', function () {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('reportForm').submit(); // Submit the form after closing the modal
+        });
+    </script>
 </body>
 </html>
