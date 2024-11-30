@@ -898,39 +898,39 @@ def export_pdf(report_id):
         pdf.cell(0, 10, 'Report Details', 0, 1, 'C')
         pdf.set_font('Arial', '', 12)
 
-        # General Report Information with First Word Bold
+       # General Report Information with Better Alignment
         pdf.set_font('Arial', 'B', 12)
-        pdf.cell(0, 10, f"Report ID: ", 0, 0)  # Bold "Report ID:"
+        pdf.cell(50, 10, "Report ID:", 0, 0)  # Bold "Report ID:" with fixed width
         pdf.set_font('Arial', '', 12)
-        pdf.cell(0, 10, f"{report['reportid']}", 0, 1)
+        pdf.cell(0, 10, f"{report['reportid']}", 0, 1)  # Remaining text fits the screen
 
         pdf.set_font('Arial', 'B', 12)
-        pdf.cell(0, 10, f"Name: ", 0, 0)  # Bold "Name:"
+        pdf.cell(50, 10, "Name:", 0, 0)  # Bold "Name:" with fixed width
         pdf.set_font('Arial', '', 12)
         pdf.cell(0, 10, f"{report['name']}", 0, 1)
 
         pdf.set_font('Arial', 'B', 12)
-        pdf.cell(0, 10, f"Vessel: ", 0, 0)  # Bold "Vessel:"
+        pdf.cell(50, 10, "Vessel:", 0, 0)  # Bold "Vessel:" with fixed width
         pdf.set_font('Arial', '', 12)
         pdf.cell(0, 10, f"{report['vessel']}", 0, 1)
 
         pdf.set_font('Arial', 'B', 12)
-        pdf.cell(0, 10, f"Date: ", 0, 0)  # Bold "Date:"
+        pdf.cell(50, 10, "Date:", 0, 0)  # Bold "Date:" with fixed width
         pdf.set_font('Arial', '', 12)
         pdf.cell(0, 10, f"{report['date']}", 0, 1)
 
         pdf.set_font('Arial', 'B', 12)
-        pdf.cell(0, 10, f"Site: ", 0, 0)  # Bold "Site:"
+        pdf.cell(50, 10, "Site:", 0, 0)  # Bold "Site:" with fixed width
         pdf.set_font('Arial', '', 12)
         pdf.cell(0, 10, f"{report['site_name']}", 0, 1)
 
         pdf.set_font('Arial', 'B', 12)
-        pdf.cell(0, 10, f"Gear: ", 0, 0)  # Bold "Gear:"
+        pdf.cell(50, 10, "Gear:", 0, 0)  # Bold "Gear:" with fixed width
         pdf.set_font('Arial', '', 12)
         pdf.cell(0, 10, f"{report['gear_name']}", 0, 1)
 
         pdf.set_font('Arial', 'B', 12)
-        pdf.cell(0, 10, f"Landing: ", 0, 0)  # Bold "Landing:"
+        pdf.cell(50, 10, "Landing:", 0, 0)  # Bold "Landing:" with fixed width
         pdf.set_font('Arial', '', 12)
         pdf.cell(0, 10, f"{report['landing_name']}", 0, 1)
 
