@@ -107,10 +107,11 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         document.getElementById('submitButton').addEventListener('click', function (e) {
-            e.preventDefault(); // Prevent form submission
+            // Prevent the default form submission
+            e.preventDefault();
 
             // Validate required fields
             const form = document.getElementById('reportForm');
@@ -138,10 +139,13 @@
             }
         });
 
+        // Allow form submission when modal OK button is clicked
         document.getElementById('closeButton').addEventListener('click', function () {
+            const form = document.getElementById('reportForm');
             document.getElementById('modal').style.display = 'none';
-            document.getElementById('reportForm').submit(); // Submit the form after closing the modal
+            form.submit(); // Submit the form after closing the modal
         });
+
     </script>
 </body>
 </html>
