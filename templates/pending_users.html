@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Users</title>
+</head>
+<body>
+    <h1>Pending Users</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Vessel Name</th>
+                <th>Registration Number</th>
+                <th>Contact</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.userid }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.password }}</td>
+                <td>{{ user.vessel_name }}</td>
+                <td>{{ user.reg_number }}</td>
+                <td>{{ user.contact }}</td>
+                <td>
+                    <form action="{{ url_for('approve_user', userid=user.userid) }}" method="post" style="display:inline;">
+                        <button type="submit">Approve</button>
+                    </form>
+                    <form action="{{ url_for('delete_user', userid=user.userid) }}" method="post" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
