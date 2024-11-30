@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{url_for('static', filename='CSS/Report.css') }}">
 
     <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
-
+    
 </head>
 <body>
     <div class="container">
@@ -80,10 +80,11 @@
                 {% endfor %}
             </select>
             <input type="text" name="price" placeholder="Price" required>
-            
+
             <button type="button" id="submitButton">Proceed</button>
+            <p id="error-message"></p>
         </form>
-        
+
         <button type="button">
             <a href="{{ url_for('my_reports') }}">My Reports</a>
         </button>
@@ -110,7 +111,7 @@
 
     <script>
         document.getElementById('submitButton').addEventListener('click', function (e) {
-            // Prevent the default form submission
+            // Prevent default button behavior
             e.preventDefault();
 
             // Validate required fields
@@ -129,23 +130,21 @@
 
             const errorMessage = document.getElementById('error-message');
 
-            // Show appropriate message
+            // Show modal if all fields are valid
             if (allFieldsValid) {
                 errorMessage.style.display = 'none'; // Hide error message
                 document.getElementById('modal').style.display = 'flex'; // Show modal
             } else {
                 errorMessage.textContent = 'Please fill up all fields first before submitting.';
-                errorMessage.style.display = 'block'; // Display error message
+                errorMessage.style.display = 'block'; // Show error message
             }
         });
 
-        // Allow form submission when modal OK button is clicked
         document.getElementById('closeButton').addEventListener('click', function () {
             const form = document.getElementById('reportForm');
-            document.getElementById('modal').style.display = 'none';
-            form.submit(); // Submit the form after closing the modal
+            document.getElementById('modal').style.display = 'none'; // Hide modal
+            form.submit(); // Submit the form
         });
-
     </script>
 </body>
 </html>
