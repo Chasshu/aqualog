@@ -898,14 +898,42 @@ def export_pdf(report_id):
         pdf.cell(0, 10, 'Report Details', 0, 1, 'C')
         pdf.set_font('Arial', '', 12)
 
-        # General Report Information
-        pdf.cell(0, 10, f"Report ID: {report['reportid']}", 0, 1)
-        pdf.cell(0, 10, f"Name: {report['name']}", 0, 1)
-        pdf.cell(0, 10, f"Vessel: {report['vessel']}", 0, 1)
-        pdf.cell(0, 10, f"Date: {report['date']}", 0, 1)
-        pdf.cell(0, 10, f"Site: {report['site_name']}", 0, 1)
-        pdf.cell(0, 10, f"Gear: {report['gear_name']}", 0, 1)
-        pdf.cell(0, 10, f"Landing: {report['landing_name']}", 0, 1)
+        # General Report Information with First Word Bold
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(0, 10, f"Report ID: ", 0, 0)  # Bold "Report ID:"
+        pdf.set_font('Arial', '', 12)
+        pdf.cell(0, 10, f"{report['reportid']}", 0, 1)
+
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(0, 10, f"Name: ", 0, 0)  # Bold "Name:"
+        pdf.set_font('Arial', '', 12)
+        pdf.cell(0, 10, f"{report['name']}", 0, 1)
+
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(0, 10, f"Vessel: ", 0, 0)  # Bold "Vessel:"
+        pdf.set_font('Arial', '', 12)
+        pdf.cell(0, 10, f"{report['vessel']}", 0, 1)
+
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(0, 10, f"Date: ", 0, 0)  # Bold "Date:"
+        pdf.set_font('Arial', '', 12)
+        pdf.cell(0, 10, f"{report['date']}", 0, 1)
+
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(0, 10, f"Site: ", 0, 0)  # Bold "Site:"
+        pdf.set_font('Arial', '', 12)
+        pdf.cell(0, 10, f"{report['site_name']}", 0, 1)
+
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(0, 10, f"Gear: ", 0, 0)  # Bold "Gear:"
+        pdf.set_font('Arial', '', 12)
+        pdf.cell(0, 10, f"{report['gear_name']}", 0, 1)
+
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(0, 10, f"Landing: ", 0, 0)  # Bold "Landing:"
+        pdf.set_font('Arial', '', 12)
+        pdf.cell(0, 10, f"{report['landing_name']}", 0, 1)
+
 
         # Add Table Header
         pdf.set_font('Arial', 'B', 12)
