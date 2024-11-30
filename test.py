@@ -793,6 +793,10 @@ def view_reports():
         flash("Unauthorized access!", "error")
         return redirect(url_for("login"))
 
+from fpdf import FPDF
+import os
+from flask import flash, redirect, url_for, send_file, session
+
 
 
 @app.route('/admin/export_pdf/<int:report_id>')
