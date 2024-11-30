@@ -6,6 +6,8 @@
     <title>Report</title>
     <link rel="stylesheet" href="{{url_for('static', filename='CSS/Report.css') }}">
 
+    <link rel="stylesheet" href="../static/CSS/Report.css">
+
     <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
     
 </head>
@@ -13,11 +15,21 @@
     <div class="container">
         <h1>Report</h1>
         <form method="POST" id="reportForm">
+            
+            <label>Name (Boat Captain or Operator): </label>           
             <input type="text" name="name" placeholder="Name" required>
+
+            <label> Fishing Vessel Name:</label>
             <input type="text" name="vessel" placeholder="Vessel" required>
-            <input type="number" name="regnumber" placeholder="Registration Number" required>
+
+            <label>Registration Number:</label>
+            <input type="text" name="regnumber" placeholder="Registration Number" required>
+
+            <label>Contact Number:</label>
             <input type="number" name="contact" placeholder="Contact Number" maxlength="11" pattern=".{11}" required>
+
             <input type="text" name="frequent" placeholder="Frequent" required>
+
             <input type="date" name="date" required>
             
             <select name="catch1" required>
