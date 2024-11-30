@@ -71,10 +71,15 @@ input::placeholder {
     background-color: red;
     color: white;
 }
+
 .red:hover{
+    background-color: red;
+    color: white;
     opacity: 0.8; 
 }
 
 .red:active{
+    background-color: red;
+    color: white;
     opacity: 0.5;
 }
