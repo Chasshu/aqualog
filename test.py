@@ -864,13 +864,14 @@ def export_pdf(report_id):
 
         query = """
             SELECT 
-                r.reportid, r.name, r.vessel, r.frequent, 
-                DATE_FORMAT(r.date, '%%Y-%%m-%%d') AS date,  -- Escaped %% characters
-                c1.name AS catch1_name, c2.name AS catch2_name, 
-                c3.name AS catch3_name, c4.name AS catch4_name, c5.name AS catch5_name,
-                r.volume1, r.volume2, r.volume3, r.volume4, r.volume5,
-                s.name AS site_name, g.name AS gear_name, r.hours,
-                l.name AS landing_name, r.price
+            r.reportid, r.name, r.vessel, r.frequent, 
+            DATE_FORMAT(r.date, '%%Y-%%m-%%d') AS date,  -- Escaped %% characters
+            c1.name AS Catch 1, c2.name AS Catch 2, 
+            c3.name AS Catch 3, c4.name AS Catch 4, c5.name AS Catch 5,
+            r.volume1, r.volume2, r.volume3, r.volume4, r.volume5,
+            s.name AS site_name, g.name AS gear_name, r.hours,
+            l.name AS landing_name, r.price
+
             FROM report r
             LEFT JOIN catch c1 ON r.catch1 = c1.catchid
             LEFT JOIN catch c2 ON r.catch2 = c2.catchid
