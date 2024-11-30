@@ -1001,7 +1001,6 @@ def export_pdf(report_id):
         pdf.cell(0, 10, 'Report Details', 0, 1, 'C')
         pdf.set_font('Arial', '', 12)
 
-<<<<<<< HEAD
         # Add general report details
         general_details = [
             ("Report ID", report["reportid"]),
@@ -1035,62 +1034,6 @@ def export_pdf(report_id):
             pdf.cell(30, 10, str(volume), 1)
             pdf.cell(30, 10, f"{price:.2f}/Kilo", 1)
             pdf.ln()
-=======
-       # General Report Information with Better Alignment
-        pdf.set_font('Arial', 'B', 12)
-        pdf.cell(50, 10, "Report ID:", 0, 0)  # Bold "Report ID:" with fixed width
-        pdf.set_font('Arial', '', 12)
-        pdf.cell(0, 10, f"{report['reportid']}", 0, 1)  # Remaining text fits the screen
-
-        pdf.set_font('Arial', 'B', 12)
-        pdf.cell(50, 10, "Name:", 0, 0)  # Bold "Name:" with fixed width
-        pdf.set_font('Arial', '', 12)
-        pdf.cell(0, 10, f"{report['name']}", 0, 1)
-
-        pdf.set_font('Arial', 'B', 12)
-        pdf.cell(50, 10, "Vessel:", 0, 0)  # Bold "Vessel:" with fixed width
-        pdf.set_font('Arial', '', 12)
-        pdf.cell(0, 10, f"{report['vessel']}", 0, 1)
-
-        pdf.set_font('Arial', 'B', 12)
-        pdf.cell(50, 10, "Date:", 0, 0)  # Bold "Date:" with fixed width
-        pdf.set_font('Arial', '', 12)
-        pdf.cell(0, 10, f"{report['date']}", 0, 1)
-
-        pdf.set_font('Arial', 'B', 12)
-        pdf.cell(50, 10, "Site:", 0, 0)  # Bold "Site:" with fixed width
-        pdf.set_font('Arial', '', 12)
-        pdf.cell(0, 10, f"{report['site_name']}", 0, 1)
-
-        pdf.set_font('Arial', 'B', 12)
-        pdf.cell(50, 10, "Gear:", 0, 0)  # Bold "Gear:" with fixed width
-        pdf.set_font('Arial', '', 12)
-        pdf.cell(0, 10, f"{report['gear_name']}", 0, 1)
-
-        pdf.set_font('Arial', 'B', 12)
-        pdf.cell(50, 10, "Landing:", 0, 0)  # Bold "Landing:" with fixed width
-        pdf.set_font('Arial', '', 12)
-        pdf.cell(0, 10, f"{report['landing_name']}", 0, 1)
-
-
-        # Add Table Header
-        pdf.set_font('Arial', 'B', 12)
-        pdf.cell(60, 10, 'Catch', 1, 0, 'C')
-        pdf.cell(60, 10, 'Volume', 1, 0, 'C')
-        pdf.cell(60, 10, 'Price', 1, 1, 'C')
-
-        # Add Table Rows
-        pdf.set_font('Arial', '', 12)
-        for i in range(1, 6):  # Iterate through Catch1 to Catch5
-            catch = report.get(f'catch{i}_name', 'N/A')
-            volume = report.get(f'volume{i}', 'N/A')
-            price = f"${report['price']:.2f}" if report['price'] else "N/A"
-
-            if catch != 'N/A':  # Add only non-empty catches
-                pdf.cell(60, 10, str(catch), 1, 0, 'C')
-                pdf.cell(60, 10, str(volume), 1, 0, 'C')
-                pdf.cell(60, 10, price, 1, 1, 'C')
->>>>>>> parent of 94027f2 (Update test.py)
 
         # Ensure the output directory exists
         output_dir = 'generated_reports'
