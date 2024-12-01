@@ -234,7 +234,7 @@ def approvereport(reportid):
 
             if report:
                 # Prepare the INSERT query for the updated `report` table
-                sql_insert = """
+               sql_insert = """
                     INSERT INTO report (userid, name, vessel, frequent, date, 
                                         catch1, catch2, catch3, catch4, catch5, 
                                         volume1, volume2, volume3, volume4, volume5, 
@@ -244,9 +244,14 @@ def approvereport(reportid):
                                         hours1, hours2, hours3, hours4, hours5,
                                         landing1, landing2, landing3, landing4, landing5,
                                         tempid)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
-                            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    VALUES (%s, %s, %s, %s, %s,
+                            %s, %s, %s, %s, %s,
+                            %s, %s, %s, %s, %s, 
+                            %s, %s, %s, %s, %s,
+                            %s, %s, %s, %s, %s,
+                            %s, %s, %s, %s, %s,
+                            %s, %s, %s, %s, %s, 
+                            %s, %s, %s, %s, %s, %s)
                 """
 
                 # Create a tuple of values to insert, including `tempid`
