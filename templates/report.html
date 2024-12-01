@@ -39,7 +39,7 @@
             <input type="text" name="regnumber" placeholder="Registration Number" required>
 
             <label>Contact Number:</label>
-            <input type="number" name="contact" placeholder="Contact Number" maxlength="11" pattern=".{11}" required>
+            <input type="number" min="0" name="contact" placeholder="Contact Number" maxlength="11" pattern=".{11}" required>
         
             <label>Frequency</label>
             <input type="text" name="frequent" placeholder="Frequent" required>
@@ -58,11 +58,11 @@
 
             <div class="price-volume-container">
                 <div class="price">
-                    <input type="number" name="price1" placeholder="price per kilo" required>
+                    <input type="number" min="0" name="price1" placeholder="price per kilo" required>
                 </div>
 
                 <div class="volume" >
-                    <input  type="number" name="volume1" placeholder="volume (kg's)" required>
+                    <input  type="number" min="0" name="volume1" placeholder="volume (kg's)" required>
                 </div>
             </div>
 
@@ -76,11 +76,11 @@
 
             <div class="price-volume-container">
                 <div class="price">
-                    <input type="number" name="price2" placeholder="price per kilo" required>
+                    <input type="number" min="0" name="price2" placeholder="price per kilo" required>
                 </div>
 
                 <div class="volume" >
-                    <input  type="number" name="volume2" placeholder="volume (kg's)" required>
+                    <input  type="number" min="0" name="volume2" placeholder="volume (kg's)" required>
                 </div>
             </div>
             
@@ -94,11 +94,11 @@
 
             <div class="price-volume-container">
                 <div class="price">
-                    <input type="number" name="price3" placeholder="price per kilo" required>
+                    <input type="number" min="0" name="price3" placeholder="price per kilo" required>
                 </div>
 
                 <div class="volume" >
-                    <input  type="number" name="volume3" placeholder="volume (kg's)" required>
+                    <input  type="number" min="0" name="volume3" placeholder="volume (kg's)" required>
                 </div>
             </div>
 
@@ -112,11 +112,11 @@
 
             <div class="price-volume-container">
                 <div class="price">
-                    <input type="number" name="price4" placeholder="price per kilo" required>
+                    <input type="number" min="0" name="price4" placeholder="price per kilo" required>
                 </div>
 
                 <div class="volume" >
-                    <input  type="number" name="volume4" placeholder="volume (kg's)" required>
+                    <input  type="number" min="0" name="volume4" placeholder="volume (kg's)" required>
                 </div>
             </div>
             
@@ -130,15 +130,15 @@
 
             <div class="price-volume-container">
                 <div class="price">
-                    <input type="number" name="price5" placeholder="price per kilo" required>
+                    <input type="number" min="0" name="price5" placeholder="price per kilo" required>
                 </div>
 
                 <div class="volume" >
-                    <input  type="number" name="volume5" placeholder="volume (kg's)" required>
+                    <input  type="number" min="0" name="volume5" placeholder="volume (kg's)" required>
                 </div>
             </div>
 
-            <label>Fishing Site:</label>
+            <label>Fishing Ground:</label>
             <select name="site" required>
                 <option value="" disabled selected hidden>Site</option>
                 {% for item in site %}
@@ -155,7 +155,7 @@
             </select>
 
             <label>Fishing Duration:</label>
-            <input type="text" name="hours" placeholder="Duration of Fishing" required>
+            <input type="text" name="hours" min="0" placeholder="hours" required>
 
             <label>Fish Landing Site:</label>
             <select name="landing" required>
