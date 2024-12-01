@@ -30,43 +30,28 @@
         </div>
         <div class="form-group">
             <label><strong>Catch 1:</strong></label>
-            <input type="text" value="{{ report.catch1_name }} (Volume: {{ report.volume1 }}) (Price: {{ report.price1 }}) (Fishing Duration: {{ report.hours1 }}) (Fishing Gear: {{ report.gear1_name }}) (Fishing Site: {{ report.site1_name }}) (Fish Landing Site: {{ report.landing1_name }})" readonly>
+            <input type="text" value="{{ report.catch1_name }}\n  **Volume:** {{ report.volume1 }} kg/s, **Price:** {{ report.price1 }} per kilo, Fishing Duration: {{ report.hours1 }}, Fishing Gear: {{ report.gear1_name }}, Fishing Site: {{ report.site1_name }}, Fish Landing Site: {{ report.landing1_name }}" readonly>
         </div>
 
-        <!-- .volume, .price, .hours, .gear, .site, .landing -->
         <div class="form-group">
             <label><strong>Catch 2:</strong></label>
-            <input type="text" value="{{ report.catch2_name }} (Volume: {{ report.volume2 }}) (Price: {{ report.price2 }})" readonly>
+            <input type="text" value="{{ report.catch2_name }} - Volume: {{ report.volume2 }}, Price: {{ report.price2 }}, Fishing Duration: {{ report.hours2 }}, Fishing Gear: {{ report.gear2_name }}, Fishing Site: {{ report.site2_name }}, Fish Landing Site: {{ report.landing2_name }}" readonly>
         </div>
+
         <div class="form-group">
             <label><strong>Catch 3:</strong></label>
-            <input type="text" value="{{ report.catch3_name }} (Volume: {{ report.volume3 }}) (Price: {{ report.price3 }})" readonly>
+            <input type="text" value="{{ report.catch3_name }} - Volume: {{ report.volume3 }}, Price: {{ report.price3 }}, Fishing Duration: {{ report.hours3 }}, Fishing Gear: {{ report.gear3_name }}, Fishing Site: {{ report.site3_name }}, Fish Landing Site: {{ report.landing3_name }}" readonly>
         </div>
+
         <div class="form-group">
             <label><strong>Catch 4:</strong></label>
-            <input type="text" value="{{ report.catch4_name }} (Volume: {{ report.volume4 }}) (Price: {{ report.price4 }}) " readonly>
+            <input type="text" value="{{ report.catch4_name }} - Volume: {{ report.volume4 }}, Price: {{ report.price4 }}, Fishing Duration: {{ report.hours4 }}, Fishing Gear: {{ report.gear4_name }}, Fishing Site: {{ report.site4_name }}, Fish Landing Site: {{ report.landing4_name }}" readonly>
         </div>
+
         <div class="form-group">
             <label><strong>Catch 5:</strong></label>
-            <input type="text" value="{{ report.catch5_name }} (Volume: {{ report.volume5 }}) (Price: {{ report.price5 }}) (Fishing Duration: {{ report.hours5 }})" readonly>
+            <input type="text" value="{{ report.catch5_name }} - Volume: {{ report.volume5 }}, Price: {{ report.price5 }}, Fishing Duration: {{ report.hours5 }}, Fishing Gear: {{ report.gear5_name }}, Fishing Site: {{ report.site5_name }}, Fish Landing Site: {{ report.landing5_name }}" readonly>
         </div>
-        <div class="form-group">
-            <label><strong>Site:</strong></label>
-            <input type="text" value="{{ report.site_name }}" readonly>
-        </div>
-        <div class="form-group">
-            <label><strong>Gear:</strong></label>
-            <input type="text" value="{{ report.gear_name }}" readonly>
-        </div>
-        <div class="form-group">
-            <label><strong>Hours:</strong></label>
-            <input type="text" value="{{ report.hours }}" readonly>
-        </div>
-        <div class="form-group">
-            <label><strong>Landing:</strong></label>
-            <input type="text" value="{{ report.landing_name }}" readonly>
-        </div>
-    </div>
 
     <div class="center">
         <a href="{{ url_for('pending') }}">Back to Pending Reports</a>
