@@ -94,31 +94,39 @@ def my_reports():
     try:
         # Fetch all approved reports from the report table
         cursor.execute("SELECT * FROM report WHERE userid = %s", (userid,))
-        approved_reports = cursor.fetchall()  # Fetch all rows for approved reports
+        approved_reports = cursor.fetchall()
         app.logger.info(f"Approved Reports: {approved_reports}")
         
         # Fetch all declined reports from the bin table
         cursor.execute("SELECT * FROM bin WHERE userid = %s", (userid,))
-        declined_reports = cursor.fetchall()  # Fetch all rows for declined reports
+        declined_reports = cursor.fetchall()
         app.logger.info(f"Declined Reports: {declined_reports}")
         
-        if not declined_reports:
-            app.logger.warning("No declined reports found for the current user.")
+        # Fetch all pending reports from the report_temp table
+        cursor.execute("SELECT * FROM report_temp WHERE userid = %s", (userid,))
+        pending_reports = cursor.fetchall()
+        app.logger.info(f"Pending Reports: {pending_reports}")
+        
+        if not pending_reports:
+            app.logger.warning("No pending reports found for the current user.")
         
     except Exception as e:
         flash(f"Error fetching reports: {str(e)}", "error")
         app.logger.error(f"Error fetching reports: {str(e)}")
         approved_reports = []
         declined_reports = []
+        pending_reports = []
     finally:
         db.close()
     
-    # Render the template with both tables
+    # Render the template with all three tables
     return render_template(
         'my_reports.html', 
         approved_reports=approved_reports, 
-        declined_reports=declined_reports
+        declined_reports=declined_reports,
+        pending_reports=pending_reports
     )
+
 
 # Route for pending reports page
 @app.route('/pending')
@@ -244,9 +252,14 @@ def approvereport(reportid):
                                         hours1, hours2, hours3, hours4, hours5,
                                         landing1, landing2, landing3, landing4, landing5,
                                         tempid)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
-                            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    VALUES (%s, %s, %s, %s, %s,
+                            %s, %s, %s, %s, %s,
+                            %s, %s, %s, %s, %s, 
+                            %s, %s, %s, %s, %s,
+                            %s, %s, %s, %s, %s,
+                            %s, %s, %s, %s, %s,
+                            %s, %s, %s, %s, %s, 
+                            %s, %s, %s, %s, %s, %s)
                 """
 
                 # Create a tuple of values to insert, including `tempid`

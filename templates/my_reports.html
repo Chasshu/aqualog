@@ -18,6 +18,34 @@
     <main class="container">
         <!-- Approved Reports Section -->
         <section class="reports">
+            <section class="reports">
+                <h2>My Pending Reports</h2>
+                {% if pending_reports %}
+                <table class="reports-table">
+                    <thead>
+                        <tr>
+                            <th>Report ID</th>
+                            <th>Name</th>
+                            <th>Vessel</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in pending_reports %}
+                        <tr>
+                            <td>{{ report.tempid }}</td>
+                            <td>{{ report.name }}</td>
+                            <td>{{ report.vessel }}</td>
+                            <td>{{ report.date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>No pending reports found.</p>
+                {% endif %}
+            </section>
+
             <h2>Approved Reports</h2>
             {% if approved_reports %}
             <table class="reports-table">
@@ -69,6 +97,7 @@
             <p>No declined reports found.</p>
             {% endif %}
         </section>
+        
     </main>
 </body>
 </html>
