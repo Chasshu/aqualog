@@ -30,8 +30,10 @@
         </div>
         <div class="form-group">
             <label><strong>Catch 1:</strong></label>
-            <input type="text" value="{{ report.catch1_name }} (Volume: {{ report.volume1 }}) (Price: {{ report.price1 }})" readonly>
+            <input type="text" value="{{ report.catch1_name }} (Volume: {{ report.volume1 }}) (Price: {{ report.price1 }}) (Fishing Duration: {{ report.hours1 }}) (Fishing Gear: {{ report.gear1 }}) (Fishing Site: {{ report.site1 }}) (Fish Landing Site: {{ report.landing1 }})" readonly>
         </div>
+
+        <!-- .volume, .price, .hours, .gear, .site, .landing -->
         <div class="form-group">
             <label><strong>Catch 2:</strong></label>
             <input type="text" value="{{ report.catch2_name }} (Volume: {{ report.volume2 }}) (Price: {{ report.price2 }})" readonly>
@@ -46,7 +48,7 @@
         </div>
         <div class="form-group">
             <label><strong>Catch 5:</strong></label>
-            <input type="text" value="{{ report.catch5_name }} (Volume: {{ report.volume5 }}) (Price: {{ report.price5 }})" readonly>
+            <input type="text" value="{{ report.catch5_name }} (Volume: {{ report.volume5 }}) (Price: {{ report.price5 }}) (Fishing Duration: {{ report.hours5 }})" readonly>
         </div>
         <div class="form-group">
             <label><strong>Site:</strong></label>
