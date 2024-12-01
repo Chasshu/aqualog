@@ -133,6 +133,7 @@ def pending():
     else:
         flash("Please login first!", "error")
         return redirect(url_for("login"))
+
 #view report
 @app.route('/viewreport/<int:reportid>')
 def viewreport(reportid):
@@ -140,7 +141,7 @@ def viewreport(reportid):
         db = connect_db()
         cursor = db.cursor(pymysql.cursors.DictCursor)
         
-        # Updated query to fetch names and prices
+        # Updated query to fetch multiple sites, gears, hours, and landings
         cursor.execute("""
             SELECT 
                 rt.reportid,
@@ -162,19 +163,47 @@ def viewreport(reportid):
                 rt.price3,
                 rt.price4,
                 rt.price5,
-                s.name AS site_name,
-                g.name AS gear_name,
-                rt.hours,
-                l.name AS landing_name
-            FROM report_temp rt
+                s1.name AS site1_name,
+                s2.name AS site2_name,
+                s3.name AS site3_name,
+                s4.name AS site4_name,
+                s5.name AS site5_name,
+                g1.name AS gear1_name,
+                g2.name AS gear2_name,
+                g3.name AS gear3_name,
+                g4.name AS gear4_name,
+                g5.name AS gear5_name,
+                rt.hours1,
+                rt.hours2,
+                rt.hours3,
+                rt.hours4,
+                rt.hours5,
+                l1.name AS landing1_name,
+                l2.name AS landing2_name,
+                l3.name AS landing3_name,
+                l4.name AS landing4_name,
+                l5.name AS landing5_name
+            FROM report rt
             LEFT JOIN catch c1 ON rt.catch1 = c1.catchid
             LEFT JOIN catch c2 ON rt.catch2 = c2.catchid
             LEFT JOIN catch c3 ON rt.catch3 = c3.catchid
             LEFT JOIN catch c4 ON rt.catch4 = c4.catchid
             LEFT JOIN catch c5 ON rt.catch5 = c5.catchid
-            LEFT JOIN site s ON rt.site = s.siteid
-            LEFT JOIN gear g ON rt.gear = g.gearid
-            LEFT JOIN landing l ON rt.landing = l.landid
+            LEFT JOIN site s1 ON rt.site1 = s1.siteid
+            LEFT JOIN site s2 ON rt.site2 = s2.siteid
+            LEFT JOIN site s3 ON rt.site3 = s3.siteid
+            LEFT JOIN site s4 ON rt.site4 = s4.siteid
+            LEFT JOIN site s5 ON rt.site5 = s5.siteid
+            LEFT JOIN gear g1 ON rt.gear1 = g1.gearid
+            LEFT JOIN gear g2 ON rt.gear2 = g2.gearid
+            LEFT JOIN gear g3 ON rt.gear3 = g3.gearid
+            LEFT JOIN gear g4 ON rt.gear4 = g4.gearid
+            LEFT JOIN gear g5 ON rt.gear5 = g5.gearid
+            LEFT JOIN landing l1 ON rt.landing1 = l1.landid
+            LEFT JOIN landing l2 ON rt.landing2 = l2.landid
+            LEFT JOIN landing l3 ON rt.landing3 = l3.landid
+            LEFT JOIN landing l4 ON rt.landing4 = l4.landid
+            LEFT JOIN landing l5 ON rt.landing5 = l5.landid
             WHERE rt.reportid = %s
         """, (reportid,))
         
@@ -190,6 +219,7 @@ def viewreport(reportid):
         flash("Please login first!", "error")
         return redirect(url_for("login"))
 
+
 # Approving a report
 @app.route('/approvereport/<int:reportid>')
 def approvereport(reportid):
@@ -203,15 +233,20 @@ def approvereport(reportid):
             report = cursor.fetchone()
 
             if report:
-                # Prepare the INSERT query for the `report` table
+                # Prepare the INSERT query for the updated `report` table
                 sql_insert = """
                     INSERT INTO report (userid, name, vessel, frequent, date, 
                                         catch1, catch2, catch3, catch4, catch5, 
                                         volume1, volume2, volume3, volume4, volume5, 
                                         price1, price2, price3, price4, price5,
-                                        site, gear, hours, landing, tempid)
+                                        site1, site2, site3, site4, site5,
+                                        gear1, gear2, gear3, gear4, gear5,
+                                        hours1, hours2, hours3, hours4, hours5,
+                                        landing1, landing2, landing3, landing4, landing5,
+                                        tempid)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
-                            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """
 
                 # Create a tuple of values to insert, including `tempid`
@@ -227,9 +262,14 @@ def approvereport(reportid):
                     report['volume4'], report['volume5'],  # Ensure these are int
                     report['price1'], report['price2'], report['price3'], 
                     report['price4'], report['price5'],  # Ensure these are int or float
-                    report['site'], report['gear'],  # Ensure these are int
-                    report['hours'],  # Ensure this is int
-                    report['landing'],  # Ensure this is int
+                    report['site1'], report['site2'], report['site3'], 
+                    report['site4'], report['site5'],  # Ensure these are int
+                    report['gear1'], report['gear2'], report['gear3'], 
+                    report['gear4'], report['gear5'],  # Ensure these are int
+                    report['hours1'], report['hours2'], report['hours3'], 
+                    report['hours4'], report['hours5'],  # Ensure these are int
+                    report['landing1'], report['landing2'], report['landing3'], 
+                    report['landing4'], report['landing5'],  # Ensure these are int
                     report['reportid']  # This becomes tempid
                 )
 
@@ -436,6 +476,7 @@ def forgot_password():
             db.close()
     
     return render_template('forgot_password.html')
+
 #reset password
 @app.route('/reset_password', methods=['GET', 'POST'])
 def reset_password():
@@ -530,30 +571,42 @@ def report():
 
     if request.method == 'POST':
         try:
-            # Prepare the SQL query
+            # Prepare the SQL query for the updated table structure
             sql = """INSERT INTO report_temp 
-                        (`userid`, `name`, `vessel`, `frequent`, `date`, 
-                         `catch1`, `catch2`, `catch3`, `catch4`, `catch5`, 
-                         `volume1`, `volume2`, `volume3`, `volume4`, `volume5`, 
-                         `site`, `gear`, `hours`, `landing`, `price1`, `price2`, `price3`, `price4`, `price5`) 
+                        (userid, name, vessel, frequent, date, 
+                         catch1, catch2, catch3, catch4, catch5, 
+                         volume1, volume2, volume3, volume4, volume5, 
+                         site1, site2, site3, site4, site5,
+                         gear1, gear2, gear3, gear4, gear5,
+                         hours1, hours2, hours3, hours4, hours5,
+                         landing1, landing2, landing3, landing4, landing5,
+                         price1, price2, price3, price4, price5) 
                      VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
-                             %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)"""
+                             %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                             %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
-            # Bind values from the form
+            # Bind values from the form, including the new fields
             values = (
                 userid,  # User ID from session
                 request.form["name"], request.form["vessel"], request.form["frequent"], 
                 request.form["date"], request.form["catch1"], request.form["catch2"], 
                 request.form["catch3"], request.form["catch4"], request.form["catch5"], 
                 request.form["volume1"], request.form["volume2"], request.form["volume3"], 
-                request.form["volume4"], request.form["volume5"], request.form["site"], 
-                request.form["gear"], request.form["hours"], request.form["landing"], 
-                request.form["price1"], request.form["price2"], request.form["price3"],
+                request.form["volume4"], request.form["volume5"], 
+                request.form["site1"], request.form["site2"], request.form["site3"], 
+                request.form["site4"], request.form["site5"], 
+                request.form["gear1"], request.form["gear2"], request.form["gear3"], 
+                request.form["gear4"], request.form["gear5"], 
+                request.form["hours1"], request.form["hours2"], request.form["hours3"], 
+                request.form["hours4"], request.form["hours5"], 
+                request.form["landing1"], request.form["landing2"], request.form["landing3"], 
+                request.form["landing4"], request.form["landing5"], 
+                request.form["price1"], request.form["price2"], request.form["price3"], 
                 request.form["price4"], request.form["price5"],
             )
 
             # Log values for debugging
-            print("Values to Insert:", values)
+            app.logger.info("Values to Insert: %s", values)
 
             # Execute the query
             cursor.execute(sql, values)
@@ -563,15 +616,13 @@ def report():
             return redirect(url_for('report'))
         except Exception as e:
             db.rollback()  # Rollback the transaction on error
+            app.logger.error("Database Error: %s", str(e))  # Log the error
             flash(f"Error inserting data: {str(e)}", "error")
-            print(f"Database Error: {e}")  # Log the error
         finally:
             cursor.close()
             db.close()
     
     return render_template('report.html', catch=catch, gear=gear, landing=landing, site=site)
-
-
 
 # Admin dashboard
 @app.route('/admin/dashboard')
@@ -890,13 +941,14 @@ def view_reports():
         flash("Unauthorized access!", "error")
         return redirect(url_for("login"))
 
+#Export to CSV
 @app.route('/admin/export_reports')
 def export_reports():
     if 'id' in session and session['role'] == 'admin':
         db = connect_db()
         cursor = db.cursor(pymysql.cursors.DictCursor)
 
-        # Updated SQL query with new price fields and formatted date
+        # Updated SQL query with new fields
         cursor.execute("""
             SELECT 
                 r.reportid, r.name, r.vessel, r.frequent, 
@@ -904,18 +956,35 @@ def export_reports():
                 c1.name AS catch1_name, c2.name AS catch2_name, 
                 c3.name AS catch3_name, c4.name AS catch4_name, c5.name AS catch5_name,
                 r.volume1, r.volume2, r.volume3, r.volume4, r.volume5,
-                r.price1, r.price2, r.price3, r.price4, r.price5,  -- Include new price fields
-                s.name AS site_name, g.name AS gear_name, r.hours,
-                l.name AS landing_name
+                r.price1, r.price2, r.price3, r.price4, r.price5,
+                s1.name AS site1_name, s2.name AS site2_name, 
+                s3.name AS site3_name, s4.name AS site4_name, s5.name AS site5_name,
+                g1.name AS gear1_name, g2.name AS gear2_name, 
+                g3.name AS gear3_name, g4.name AS gear4_name, g5.name AS gear5_name,
+                r.hours1, r.hours2, r.hours3, r.hours4, r.hours5,
+                l1.name AS landing1_name, l2.name AS landing2_name, 
+                l3.name AS landing3_name, l4.name AS landing4_name, l5.name AS landing5_name
             FROM report r
             LEFT JOIN catch c1 ON r.catch1 = c1.catchid
             LEFT JOIN catch c2 ON r.catch2 = c2.catchid
             LEFT JOIN catch c3 ON r.catch3 = c3.catchid
             LEFT JOIN catch c4 ON r.catch4 = c4.catchid
             LEFT JOIN catch c5 ON r.catch5 = c5.catchid
-            LEFT JOIN site s ON r.site = s.siteid
-            LEFT JOIN gear g ON r.gear = g.gearid
-            LEFT JOIN landing l ON r.landing = l.landid
+            LEFT JOIN site s1 ON r.site1 = s1.siteid
+            LEFT JOIN site s2 ON r.site2 = s2.siteid
+            LEFT JOIN site s3 ON r.site3 = s3.siteid
+            LEFT JOIN site s4 ON r.site4 = s4.siteid
+            LEFT JOIN site s5 ON r.site5 = s5.siteid
+            LEFT JOIN gear g1 ON r.gear1 = g1.gearid
+            LEFT JOIN gear g2 ON r.gear2 = g2.gearid
+            LEFT JOIN gear g3 ON r.gear3 = g3.gearid
+            LEFT JOIN gear g4 ON r.gear4 = g4.gearid
+            LEFT JOIN gear g5 ON r.gear5 = g5.gearid
+            LEFT JOIN landing l1 ON r.landing1 = l1.landid
+            LEFT JOIN landing l2 ON r.landing2 = l2.landid
+            LEFT JOIN landing l3 ON r.landing3 = l3.landid
+            LEFT JOIN landing l4 ON r.landing4 = l4.landid
+            LEFT JOIN landing l5 ON r.landing5 = l5.landid
         """)
 
         reports = cursor.fetchall()
@@ -928,25 +997,31 @@ def export_reports():
                 "Report ID", "Name", "Vessel", "Frequent", "Date", 
                 "Catch1", "Catch2", "Catch3", "Catch4", "Catch5",
                 "Volume1", "Volume2", "Volume3", "Volume4", "Volume5",
-                "Price1", "Price2", "Price3", "Price4", "Price5",  # Updated to include all price fields
-                "Site", "Gear", "Hours", "Landing"
+                "Price1", "Price2", "Price3", "Price4", "Price5",
+                "Site1", "Site2", "Site3", "Site4", "Site5",
+                "Gear1", "Gear2", "Gear3", "Gear4", "Gear5",
+                "Hours1", "Hours2", "Hours3", "Hours4", "Hours5",
+                "Landing1", "Landing2", "Landing3", "Landing4", "Landing5"
             ]
             yield ','.join(header) + '\n'
 
             for report in reports:
-                # Format the date to ensure it's in the correct format
-                date = report["date"]  # Already formatted by SQL
-
                 row = [
-                    report["reportid"], report["name"], report["vessel"], report["frequent"], date,
+                    report["reportid"], report["name"], report["vessel"], report["frequent"], report["date"],
                     report["catch1_name"], report["catch2_name"], report["catch3_name"], 
                     report["catch4_name"], report["catch5_name"],
                     report["volume1"], report["volume2"], report["volume3"], 
                     report["volume4"], report["volume5"],
                     report["price1"], report["price2"], report["price3"], 
-                    report["price4"], report["price5"],  # Include all price fields in the output
-                    report["site_name"], report["gear_name"], report["hours"], 
-                    report["landing_name"]
+                    report["price4"], report["price5"],
+                    report["site1_name"], report["site2_name"], report["site3_name"], 
+                    report["site4_name"], report["site5_name"],
+                    report["gear1_name"], report["gear2_name"], report["gear3_name"], 
+                    report["gear4_name"], report["gear5_name"],
+                    report["hours1"], report["hours2"], report["hours3"], 
+                    report["hours4"], report["hours5"],
+                    report["landing1_name"], report["landing2_name"], report["landing3_name"], 
+                    report["landing4_name"], report["landing5_name"]
                 ]
                 # Convert all row values to strings and join with commas
                 yield ','.join(map(str, row)) + '\n'
@@ -964,7 +1039,7 @@ def export_pdf(report_id):
         db = connect_db()
         cursor = db.cursor(pymysql.cursors.DictCursor)
 
-        # Updated SQL query to include price1 through price5
+        # Updated SQL query to include all new fields
         query = """
             SELECT 
                 r.reportid, r.name, r.vessel, r.frequent, 
@@ -972,18 +1047,35 @@ def export_pdf(report_id):
                 c1.name AS catch1_name, c2.name AS catch2_name, 
                 c3.name AS catch3_name, c4.name AS catch4_name, c5.name AS catch5_name,
                 r.volume1, r.volume2, r.volume3, r.volume4, r.volume5,
-                r.price1, r.price2, r.price3, r.price4, r.price5,  -- Include new price fields
-                s.name AS site_name, g.name AS gear_name, r.hours,
-                l.name AS landing_name
+                r.price1, r.price2, r.price3, r.price4, r.price5,
+                s1.name AS site1_name, s2.name AS site2_name, 
+                s3.name AS site3_name, s4.name AS site4_name, s5.name AS site5_name,
+                g1.name AS gear1_name, g2.name AS gear2_name, 
+                g3.name AS gear3_name, g4.name AS gear4_name, g5.name AS gear5_name,
+                r.hours1, r.hours2, r.hours3, r.hours4, r.hours5,
+                l1.name AS landing1_name, l2.name AS landing2_name, 
+                l3.name AS landing3_name, l4.name AS landing4_name, l5.name AS landing5_name
             FROM report r
             LEFT JOIN catch c1 ON r.catch1 = c1.catchid
             LEFT JOIN catch c2 ON r.catch2 = c2.catchid
             LEFT JOIN catch c3 ON r.catch3 = c3.catchid
             LEFT JOIN catch c4 ON r.catch4 = c4.catchid
             LEFT JOIN catch c5 ON r.catch5 = c5.catchid
-            LEFT JOIN site s ON r.site = s.siteid
-            LEFT JOIN gear g ON r.gear = g.gearid
-            LEFT JOIN landing l ON r.landing = l.landid
+            LEFT JOIN site s1 ON r.site1 = s1.siteid
+            LEFT JOIN site s2 ON r.site2 = s2.siteid
+            LEFT JOIN site s3 ON r.site3 = s3.siteid
+            LEFT JOIN site s4 ON r.site4 = s4.siteid
+            LEFT JOIN site s5 ON r.site5 = s5.siteid
+            LEFT JOIN gear g1 ON r.gear1 = g1.gearid
+            LEFT JOIN gear g2 ON r.gear2 = g2.gearid
+            LEFT JOIN gear g3 ON r.gear3 = g3.gearid
+            LEFT JOIN gear g4 ON r.gear4 = g4.gearid
+            LEFT JOIN gear g5 ON r.gear5 = g5.gearid
+            LEFT JOIN landing l1 ON r.landing1 = l1.landid
+            LEFT JOIN landing l2 ON r.landing2 = l2.landid
+            LEFT JOIN landing l3 ON r.landing3 = l3.landid
+            LEFT JOIN landing l4 ON r.landing4 = l4.landid
+            LEFT JOIN landing l5 ON r.landing5 = l5.landid
             WHERE r.reportid = %s
         """
         cursor.execute(query, (report_id,))
@@ -1008,14 +1100,20 @@ def export_pdf(report_id):
             ("Vessel", report["vessel"]),
             ("Frequent", report["frequent"]),
             ("Date", report["date"]),
-            ("Site", report["site_name"]),
-            ("Gear", report["gear_name"]),
-            ("Landing", report["landing_name"]),
-            ("Hours", report["hours"]),
         ]
 
         for label, value in general_details:
             pdf.cell(0, 10, f"{label}: {value}", 0, 1)
+
+        # Add table for sites, gears, and landings
+        for section, prefix, count in [("Sites", "site", 5), ("Gears", "gear", 5), ("Landings", "landing", 5)]:
+            pdf.cell(0, 10, '', 0, 1)  # Add space before section
+            pdf.set_font('Arial', 'B', 12)
+            pdf.cell(50, 10, section, 0, 1)
+            pdf.set_font('Arial', '', 12)
+            for i in range(1, count + 1):
+                value = report.get(f"{prefix}{i}_name", "N/A")
+                pdf.cell(0, 10, f"{prefix.capitalize()} {i}: {value}", 0, 1)
 
         # Add table for catches, volumes, and prices
         pdf.cell(0, 10, '', 0, 1)  # Add space before table
@@ -1047,6 +1145,7 @@ def export_pdf(report_id):
     else:
         flash("Unauthorized access!", "error")
         return redirect(url_for("login"))
+
 
 
     
