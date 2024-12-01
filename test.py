@@ -94,31 +94,39 @@ def my_reports():
     try:
         # Fetch all approved reports from the report table
         cursor.execute("SELECT * FROM report WHERE userid = %s", (userid,))
-        approved_reports = cursor.fetchall()  # Fetch all rows for approved reports
+        approved_reports = cursor.fetchall()
         app.logger.info(f"Approved Reports: {approved_reports}")
         
         # Fetch all declined reports from the bin table
         cursor.execute("SELECT * FROM bin WHERE userid = %s", (userid,))
-        declined_reports = cursor.fetchall()  # Fetch all rows for declined reports
+        declined_reports = cursor.fetchall()
         app.logger.info(f"Declined Reports: {declined_reports}")
         
-        if not declined_reports:
-            app.logger.warning("No declined reports found for the current user.")
+        # Fetch all pending reports from the report_temp table
+        cursor.execute("SELECT * FROM report_temp WHERE userid = %s", (userid,))
+        pending_reports = cursor.fetchall()
+        app.logger.info(f"Pending Reports: {pending_reports}")
+        
+        if not pending_reports:
+            app.logger.warning("No pending reports found for the current user.")
         
     except Exception as e:
         flash(f"Error fetching reports: {str(e)}", "error")
         app.logger.error(f"Error fetching reports: {str(e)}")
         approved_reports = []
         declined_reports = []
+        pending_reports = []
     finally:
         db.close()
     
-    # Render the template with both tables
+    # Render the template with all three tables
     return render_template(
         'my_reports.html', 
         approved_reports=approved_reports, 
-        declined_reports=declined_reports
+        declined_reports=declined_reports,
+        pending_reports=pending_reports
     )
+
 
 # Route for pending reports page
 @app.route('/pending')
@@ -234,7 +242,7 @@ def approvereport(reportid):
 
             if report:
                 # Prepare the INSERT query for the updated `report` table
-               sql_insert = """
+                sql_insert = """
                     INSERT INTO report (userid, name, vessel, frequent, date, 
                                         catch1, catch2, catch3, catch4, catch5, 
                                         volume1, volume2, volume3, volume4, volume5, 
@@ -561,22 +569,21 @@ def report():
     
     userid = session['id']  # Retrieve user ID from session
 
-    db = connect_db()
-    cursor = db.cursor(pymysql.cursors.DictCursor)
+    try:
+        db = connect_db()
+        cursor = db.cursor(pymysql.cursors.DictCursor)
 
-    # Fetching dropdown data
-    cursor.execute("SELECT catchid, name FROM catch")  # Fetch catch data
-    catch = cursor.fetchall()
-    cursor.execute("SELECT gearid, name FROM gear")  # Fetch gear data
-    gear = cursor.fetchall()
-    cursor.execute("SELECT landid, name FROM landing")  # Fetch landing data
-    landing = cursor.fetchall()
-    cursor.execute("SELECT siteid, name FROM site")  # Fetch site data
-    site = cursor.fetchall()
+        # Fetching dropdown data
+        cursor.execute("SELECT catchid, name FROM catch")  # Fetch catch data
+        catch = cursor.fetchall()
+        cursor.execute("SELECT gearid, name FROM gear")  # Fetch gear data
+        gear = cursor.fetchall()
+        cursor.execute("SELECT landid, name FROM landing")  # Fetch landing data
+        landing = cursor.fetchall()
+        cursor.execute("SELECT siteid, name FROM site")  # Fetch site data
+        site = cursor.fetchall()
 
-    if request.method == 'POST':
-        try:
-            # Prepare the SQL query for the updated table structure
+        if request.method == 'POST':
             sql = """INSERT INTO report_temp (
                         userid, name, vessel, frequent, date, 
                         catch1, catch2, catch3, catch4, catch5, 
@@ -590,46 +597,45 @@ def report():
                             %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
                             %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
                             %s, %s, %s, %s)"""
-
-
-            # Bind values from the form, including the new fields
             values = (
-                userid,  # User ID from session
-                request.form["name"], request.form["vessel"], request.form["frequent"], 
-                request.form["date"], request.form["catch1"], request.form["catch2"], 
-                request.form["catch3"], request.form["catch4"], request.form["catch5"], 
-                request.form["volume1"], request.form["volume2"], request.form["volume3"], 
-                request.form["volume4"], request.form["volume5"], 
-                request.form["site1"], request.form["site2"], request.form["site3"], 
-                request.form["site4"], request.form["site5"], 
-                request.form["gear1"], request.form["gear2"], request.form["gear3"], 
-                request.form["gear4"], request.form["gear5"], 
-                request.form["hours1"], request.form["hours2"], request.form["hours3"], 
-                request.form["hours4"], request.form["hours5"], 
-                request.form["landing1"], request.form["landing2"], request.form["landing3"], 
-                request.form["landing4"], request.form["landing5"], 
-                request.form["price1"], request.form["price2"], request.form["price3"], 
-                request.form["price4"], request.form["price5"],
+                userid,
+                request.form.get("name"), request.form.get("vessel"),
+                request.form.get("frequent"), request.form.get("date"),
+                request.form.get("catch1"), request.form.get("catch2"),
+                request.form.get("catch3"), request.form.get("catch4"),
+                request.form.get("catch5"), request.form.get("volume1"),
+                request.form.get("volume2"), request.form.get("volume3"),
+                request.form.get("volume4"), request.form.get("volume5"),
+                request.form.get("site1"), request.form.get("site2"),
+                request.form.get("site3"), request.form.get("site4"),
+                request.form.get("site5"), request.form.get("gear1"),
+                request.form.get("gear2"), request.form.get("gear3"),
+                request.form.get("gear4"), request.form.get("gear5"),
+                request.form.get("hours1"), request.form.get("hours2"),
+                request.form.get("hours3"), request.form.get("hours4"),
+                request.form.get("hours5"), request.form.get("landing1"),
+                request.form.get("landing2"), request.form.get("landing3"),
+                request.form.get("landing4"), request.form.get("landing5"),
+                request.form.get("price1"), request.form.get("price2"),
+                request.form.get("price3"), request.form.get("price4"),
+                request.form.get("price5"),
             )
 
-            # Log values for debugging
-            app.logger.info("Values to Insert: %s", values)
-
-            # Execute the query
             cursor.execute(sql, values)
-            db.commit()  # Commit the transaction
-            
+            db.commit()
             flash("Report submitted successfully!", "success")
             return redirect(url_for('report'))
-        except Exception as e:
-            db.rollback()  # Rollback the transaction on error
-            app.logger.error("Database Error: %s", str(e))  # Log the error
-            flash(f"Error inserting data: {str(e)}", "error")
-        finally:
+    except Exception as e:
+        app.logger.error(f"Error: {str(e)}")
+        flash("An error occurred while processing your report.", "error")
+    finally:
+        if cursor:
             cursor.close()
+        if db:
             db.close()
     
     return render_template('report.html', catch=catch, gear=gear, landing=landing, site=site)
+
 
 # Admin dashboard
 @app.route('/admin/dashboard')
