@@ -572,15 +572,19 @@ def report():
     if request.method == 'POST':
         try:
             # Prepare the SQL query for the updated table structure
-            query = """
-INSERT INTO report_temp (
-    reportid, userid, name, vessel, frequent, date, catch1, catch2, catch3, catch4, catch5, 
-    volume1, volume2, volume3, volume4, volume5, site1, site2, site3, site4, site5, 
-    gear1, gear2, gear3, gear4, gear5, hours1, hours2, hours3, hours4, hours5, 
-    landing1, landing2, landing3, landing4, landing5, price1, price2, price3, price4, price5
-) 
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-"""
+            sql = """INSERT INTO report_temp (
+                        userid, name, vessel, frequent, date, 
+                        catch1, catch2, catch3, catch4, catch5, 
+                        volume1, volume2, volume3, volume4, volume5, 
+                        site1, site2, site3, site4, site5,
+                        gear1, gear2, gear3, gear4, gear5,
+                        hours1, hours2, hours3, hours4, hours5,
+                        landing1, landing2, landing3, landing4, landing5,
+                        price1, price2, price3, price4, price5) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
+                            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
+                            %s, %s, %s, %s)"""
 
 
             # Bind values from the form, including the new fields
