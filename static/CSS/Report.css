@@ -19,17 +19,98 @@ body {
     overflow-y: auto; 
     box-sizing: border-box;
     margin: 20px 0;
+    position: relative;
 }
 
-h1 {
-    text-align: center;
-    color: #444;
-    margin-bottom: 20px;
+.form-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    height: 60px;
+
 }
+
+.user-icon{
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+}
+
+.form-title{
+    color: #444;
+    /* margin-bottom: 20px; */
+    font-size: 40px;
+    font-weight: bold;
+    
+}
+
 
 form {
     display: flex;
     flex-direction: column;
+}
+
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.user-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 35px; /* Adjust as needed */
+    right: 0;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    z-index: 1000;
+    min-width: 150px;
+    overflow: hidden;
+     border: 1px  rgba(45, 106, 79, 0.13) solid;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f0f0f0;
+}
+
+/* Show dropdown menu when hovered */
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+label {
+    display: block;
+    text-align: left;
+    margin: 8px 0 5px;
+    color: #2d6a4f; 
+    font-weight: 500;
+    font-size: 14px;
 }
 
 input, select, button {
@@ -42,7 +123,7 @@ input, select, button {
     box-sizing: border-box;
 }
 
-button {
+.proceed {
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -50,11 +131,11 @@ button {
     transition: background-color 0.3s;
 }
 
-button:hover {
+.proceed:hover {
     background-color: #45a049;
 }
 
-button a {
+.proceed a {
     color: white;
     text-decoration: none;
     display: inline-block;
@@ -66,23 +147,25 @@ input::placeholder {
     color: #aaa;
 }
 
-
-.red{
-    background-color: red;
-    color: white;
+input:focus {
+    border-color: #40916c; 
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(64, 145, 108, 0.1); 
 }
 
-.red:hover{
-    background-color: red;
-    color: white;
-    opacity: 0.8; 
+.price-volume-container{
+    display: flex;
+    column-gap: 10px ; 
 }
 
-.red:active{
-    background-color: red;
-    color: white;
-    opacity: 0.5;
+.volume{
+    flex: 1;
 }
+
+.price{
+    flex: 1;
+}
+
 
 .modal {
     display: none; /* Hidden by default */
