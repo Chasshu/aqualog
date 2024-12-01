@@ -14,7 +14,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     width: 90%;
-    max-width: 600px;
+    max-width: 800px;
     max-height: 80vh; 
     overflow-y: auto; 
     box-sizing: border-box;
@@ -93,6 +93,7 @@ form {
     color: #333;
     font-size: 14px;
     transition: background-color 0.3s ease;
+    border-bottom:1px lightgrey solid;
 }
 
 .dropdown-menu a:hover {
@@ -109,12 +110,12 @@ label {
     text-align: left;
     margin: 8px 0 5px;
     color: #2d6a4f; 
-    font-weight: 500;
+    font-weight: 600;
     font-size: 18px;
 }
 
 input, select, button {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ddd;
@@ -144,7 +145,16 @@ input, select, button {
 }
 
 input::placeholder {
-    color: #aaa;
+    color: grey;
+    font-size: 14px;
+    /* font-style: italic; */
+
+}
+
+select {
+    color: grey;
+    font-size: 14px;
+    /* font-style: italic; */
 }
 
 input:focus {
@@ -153,20 +163,37 @@ input:focus {
     box-shadow: 0 0 0 3px rgba(64, 145, 108, 0.1); 
 }
 
-.price-volume-container{
+.two-col-container{
     display: flex;
     column-gap: 10px ; 
 }
 
-.volume{
+.volume, .price, .hours, .gear, .site, .landing {
     flex: 1;
+    /* font-size: 15px ; */
 }
 
-.price{
-    flex: 1;
+.label-inside{
+    display: block;
+    text-align: left;
+    margin: 8px 0 5px;
+    color: #2d6a4f; 
+    font-weight: 500;
+    font-size: 16px;
 }
 
+.label-under{
+    display: block;
+    text-align: left;
+    margin: 8px 0 5px;
+    color: #2d6a4f; 
+    font-weight: 500;
+    font-size: 16px;
+}
 
+hr{
+    z-index: 100;
+}
 .modal {
     display: none; /* Hidden by default */
     position: fixed;
