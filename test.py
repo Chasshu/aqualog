@@ -183,7 +183,7 @@ def viewreport(reportid):
                 l3.name AS landing3_name,
                 l4.name AS landing4_name,
                 l5.name AS landing5_name
-            FROM report rt
+            FROM report_temp rt
             LEFT JOIN catch c1 ON rt.catch1 = c1.catchid
             LEFT JOIN catch c2 ON rt.catch2 = c2.catchid
             LEFT JOIN catch c3 ON rt.catch3 = c3.catchid
