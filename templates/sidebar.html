@@ -24,6 +24,10 @@
                     <img src="{{ url_for('static', filename='Assets/dashboard.svg') }}" alt="Dashboard Icon" class="icon">
                     <span>Dashboard</span>
                 </a>
+                <a href="{{ url_for('admin_register') }}" data-page="pending">
+                    <img src="{{ url_for('static', filename='Assets/report.svg') }}" alt="Pending Icon" class="icon">
+                    <span>Register New Admin</span>
+                </a>
                 <a href="{{ url_for('pending') }}" data-page="pending">
                     <img src="{{ url_for('static', filename='Assets/report.svg') }}" alt="Pending Icon" class="icon">
                     <span>Pending Reports</span>
@@ -31,6 +35,10 @@
                 <a href="{{ url_for('pending_users') }}" data-page="pending">
                     <img src="{{ url_for('static', filename='Assets/report.svg') }}" alt="Pending Icon" class="icon">
                     <span>Pending Users</span>
+                </a>
+                <a href="{{ url_for('userlist') }}" data-page="pending">
+                    <img src="{{ url_for('static', filename='Assets/report.svg') }}" alt="Pending Icon" class="icon">
+                    <span>User List</span>
                 </a>
                 <a href="{{ url_for('visualization_page') }}" data-page="visualization">
                     <img src="{{ url_for('static', filename='Assets/graph.svg') }}" alt="Visualization Icon" class="icon">

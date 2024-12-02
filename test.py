@@ -560,6 +560,26 @@ def register():
             db.close()
     return render_template('register.html')
 
+@app.route('/admin_register', methods=['GET', 'POST'])
+def admin_register():
+    if request.method == 'POST':
+        username = validate(request.form['username'])
+        password = validate(request.form['password'])
+
+        db = connect_db()
+        cursor = db.cursor()
+        try:
+            cursor.execute("INSERT INTO admin (username, password) VALUES (%s, %s)", (username, password))
+            db.commit()
+            return redirect(url_for('admin_dashboard'))
+        except Exception as e:
+            db.rollback()
+            flash(f"Error: {str(e)}", "error")
+            return redirect(url_for('admin_register'))
+        finally:
+            db.close()
+    return render_template('admin_register.html')
+
 # User report submission
 @app.route('/report', methods=['GET', 'POST'])
 def report():
@@ -950,6 +970,19 @@ def view_reports():
         reports = cursor.fetchall()
         db.close()
         return render_template('view_reports.html', reports=reports)
+    else:
+        flash("Unauthorized access!", "error")
+        return redirect(url_for("login"))
+
+@app.route('/admin/userlist')
+def userlist():
+    if 'id' in session and session['role'] == 'admin':
+        db = connect_db()
+        cursor = db.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("SELECT * FROM user")
+        user = cursor.fetchall()
+        db.close()
+        return render_template('userlist.html', user=user)
     else:
         flash("Unauthorized access!", "error")
         return redirect(url_for("login"))
