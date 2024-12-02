@@ -24,7 +24,7 @@
                 <table class="reports-table">
                     <thead>
                         <tr>
-                            <th>Report ID</th>
+                            <!-- <th>Report ID</th> -->
                             <th>Name</th>
                             <th>Vessel</th>
                             <th>Date</th>
@@ -33,7 +33,7 @@
                     <tbody>
                         {% for report in pending_reports %}
                         <tr>
-                            <td>{{ report.tempid }}</td>
+                            <!-- <td>{{ report.tempid }}</td> -->
                             <td>{{ report.name }}</td>
                             <td>{{ report.vessel }}</td>
                             <td>{{ report.date }}</td>
@@ -51,7 +51,7 @@
             <table class="reports-table">
                 <thead>
                     <tr>
-                        <th>Report ID</th>
+                        <!-- <th>Report ID</th> -->
                         <th>Name</th>
                         <th>Vessel</th>
                         <th>Date</th>
@@ -60,7 +60,7 @@
                 <tbody>
                     {% for report in approved_reports %}
                     <tr>
-                        <td>{{ report.tempid }}</td>
+                        <!-- <td>{{ report.tempid }}</td> -->
                         <td>{{ report.name }}</td>
                         <td>{{ report.vessel }}</td>
                         <td>{{ report.date }}</td>
@@ -80,15 +80,17 @@
             <table class="reports-table">
                 <thead>
                     <tr>
-                        <th>Report ID</th>
-                        <th>Nam</th>
+                        <!-- <th>Report ID</th> -->
+                        <th>Name</th>
+                        <th>Date</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for report in declined_reports %}
                     <tr>
-                        <td>{{ report.id }}</td>
+                        <!-- <td>{{ report.id }}</td> -->
                         <td>{{ report.name }}</td>
+                        <td>{{ report.date }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

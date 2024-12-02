@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>View Report</title>
+
+    <link rel="stylesheet" href="../static/CSS/viewreport.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='CSS/viewreport.css') }}"/>
     <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
 </head>
@@ -28,43 +30,201 @@
             <label><strong>Date:</strong></label>
             <input type="text" value="{{ report.date }}" readonly>
         </div>
+
         <div class="form-group">
             <label><strong>Catch 1:</strong></label>
-            <input type="text" value="{{ report.catch1_name }} (Volume: {{ report.volume1 }}) (Price: {{ report.price1 }})" readonly>
+            <div class="main-con">
+
+                <div class="data">
+                    <label class="label-inside">Species:</label>
+                    <input type="text" value="{{ report.catch1_name }}" readonly>
+                </div>
+
+                <div class="two-col-con">
+
+                    <div class="data">
+                        <label class="label-inside">Volume:</label>
+                        <input type="text" value="{{ report.volume1 }} kg" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Price:</label>
+                        <input type="text" value="{{ report.price1 }} per kilo" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fishing Duration:</label>
+                        <input type="text" value="{{ report.hours1 }}" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fishing Gear:</label>
+                        <input type="text" value="{{ report.gear1_name }}" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fishing Site:</label>
+                        <input type="text" value="{{ report.site1_name }}" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fish Landing Site:</label>
+                        <input type="text" value="{{ report.landing1_name }}" readonly>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <div class="form-group">
             <label><strong>Catch 2:</strong></label>
-            <input type="text" value="{{ report.catch2_name }} (Volume: {{ report.volume2 }}) (Price: {{ report.price2 }})" readonly>
+            <div class="main-con">
+
+                <div class="data">
+                    <label class="label-inside">Species:</label>
+                    <input type="text" value="{{ report.catch2_name }}" readonly>
+                </div>
+                
+                <div class="two-col-con">
+
+                    <div class="data">
+                        <label class="label-inside">Volume:</label>
+                        <input type="text" value="{{ report.volume2 }} kg" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Price:</label>
+                        <input type="text" value="{{ report.price2 }} per kilo" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fishing Duration:</label>
+                        <input type="text" value="{{ report.hours2 }}" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fishing Gear:</label>
+                        <input type="text" value="{{ report.gear2_name }}" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fishing Site:</label>
+                        <input type="text" value="{{ report.site2_name }}" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fish Landing Site:</label>
+                        <input type="text" value="{{ report.landing2_name }}" readonly>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <div class="form-group">
             <label><strong>Catch 3:</strong></label>
-            <input type="text" value="{{ report.catch3_name }} (Volume: {{ report.volume3 }}) (Price: {{ report.price3 }})" readonly>
+            <div class="main-con">
+
+                <div class="data">
+                    <label class="label-inside">Species:</label>
+                    <input type="text" value="{{ report.catch3_name }}" readonly>
+                </div>
+                
+                <div class="two-col-con">
+
+                    <div class="data">
+                        <label class="label-inside">Volume:</label>
+                        <input type="text" value="{{ report.volume3 }} kg" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Price:</label>
+                        <input type="text" value="{{ report.price3 }} per kilo" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fishing Duration:</label>
+                        <input type="text" value="{{ report.hours3 }}" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fishing Gear:</label>
+                        <input type="text" value="{{ report.gear3_name }}" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fishing Site:</label>
+                        <input type="text" value="{{ report.site3_name }}" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fish Landing Site:</label>
+                        <input type="text" value="{{ report.landing3_name }}" readonly>
+                    </div>
+                </div>
+            </div>
         </div>
+        
         <div class="form-group">
             <label><strong>Catch 4:</strong></label>
-            <input type="text" value="{{ report.catch4_name }} (Volume: {{ report.volume4 }}) (Price: {{ report.price4 }}) " readonly>
+            <div class="main-con">
+
+                <div class="data">
+                    <label class="label-inside">Species:</label>
+                    <input type="text" value="{{ report.catch4_name }}" readonly>
+                </div>
+                
+                <div class="two-col-con">
+
+                    <div class="data">
+                        <label class="label-inside">Volume:</label>
+                        <input type="text" value="{{ report.volume4 }} kg" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Price:</label>
+                        <input type="text" value="{{ report.price4 }} per kilo" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fishing Duration:</label>
+                        <input type="text" value="{{ report.hours4 }}" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fishing Gear:</label>
+                        <input type="text" value="{{ report.gear4_name }}" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fishing Site:</label>
+                        <input type="text" value="{{ report.site4_name }}" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fish Landing Site:</label>
+                        <input type="text" value="{{ report.landing4_name }}" readonly>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <div class="form-group">
             <label><strong>Catch 5:</strong></label>
-            <input type="text" value="{{ report.catch5_name }} (Volume: {{ report.volume5 }}) (Price: {{ report.price5 }})" readonly>
+            <div class="main-con">
+
+                <div class="data">
+                    <label class="label-inside">Species:</label>
+                    <input type="text" value="{{ report.catch5_name }}" readonly>
+                </div>
+                
+                <div class="two-col-con">
+
+                    <div class="data">
+                        <label class="label-inside">Volume:</label>
+                        <input type="text" value="{{ report.volume5 }} kg" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Price:</label>
+                        <input type="text" value="{{ report.price5 }} per kilo" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fishing Duration:</label>
+                        <input type="text" value="{{ report.hours5 }}" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fishing Gear:</label>
+                        <input type="text" value="{{ report.gear5_name }}" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fishing Site:</label>
+                        <input type="text" value="{{ report.site5_name }}" readonly>
+                    </div>
+                    <div class="data">
+                        <label class="label-inside">Fish Landing Site:</label>
+                        <input type="text" value="{{ report.landing5_name }}" readonly>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label><strong>Site:</strong></label>
-            <input type="text" value="{{ report.site_name }}" readonly>
-        </div>
-        <div class="form-group">
-            <label><strong>Gear:</strong></label>
-            <input type="text" value="{{ report.gear_name }}" readonly>
-        </div>
-        <div class="form-group">
-            <label><strong>Hours:</strong></label>
-            <input type="text" value="{{ report.hours }}" readonly>
-        </div>
-        <div class="form-group">
-            <label><strong>Landing:</strong></label>
-            <input type="text" value="{{ report.landing_name }}" readonly>
-        </div>
-    </div>
 
     <div class="center">
         <a href="{{ url_for('pending') }}">Back to Pending Reports</a>
