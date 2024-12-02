@@ -658,15 +658,19 @@ def report():
 
 
 # Admin dashboard
-@app.route('/admin/dashboard')
+@app.route('/admin/dashboard', methods=['GET', 'POST'])
 def admin_dashboard():
     if 'id' in session and session['role'] == 'admin':
         try:
             db = connect_db()
             cursor = db.cursor(pymysql.cursors.DictCursor)
 
-            # Query to fetch yearly species ranking by total catch volume
-            cursor.execute("""
+            # Get the selected year from the form or default to 2022
+            selected_year = request.form.get('year', 2022)
+            years = [2020, 2021, 2022, 2023, 2024, 2025]
+
+            # Query for yearly ranking
+            cursor.execute(f"""
                 SELECT 
                     CASE 
                         WHEN r.`catch1` BETWEEN 2 AND 42 THEN c1.name
@@ -692,12 +696,13 @@ def admin_dashboard():
                      r.catch3 BETWEEN 2 AND 42 OR 
                      r.catch4 BETWEEN 2 AND 42 OR 
                      r.catch5 BETWEEN 2 AND 42)
+                     AND YEAR(r.date) = %s
                 GROUP BY species_name
                 ORDER BY total_volume DESC;
-            """)
+            """, (selected_year,))
             species_ranking = cursor.fetchall()
 
-            # Query to fetch monthly species ranking by total catch volume with species name
+            # Query for monthly species ranking
             cursor.execute("""
                 SELECT 
                     main.period,
@@ -706,24 +711,24 @@ def admin_dashboard():
                 FROM (
                     SELECT 
                         CASE 
-                            WHEN EXTRACT(MONTH FROM r.`date`) IS NULL THEN 'Year' 
-                            ELSE MONTHNAME(r.`date`) 
+                            WHEN EXTRACT(MONTH FROM r.date) IS NULL THEN 'Year' 
+                            ELSE MONTHNAME(r.date) 
                         END AS period,
                         CASE 
-                            WHEN r.`catch1` BETWEEN 2 AND 42 THEN c1.name
-                            WHEN r.`catch2` BETWEEN 2 AND 42 THEN c2.name
-                            WHEN r.`catch3` BETWEEN 2 AND 42 THEN c3.name
-                            WHEN r.`catch4` BETWEEN 2 AND 42 THEN c4.name
-                            WHEN r.`catch5` BETWEEN 2 AND 42 THEN c5.name
+                            WHEN r.catch1 BETWEEN 2 AND 42 THEN c1.name
+                            WHEN r.catch2 BETWEEN 2 AND 42 THEN c2.name
+                            WHEN r.catch3 BETWEEN 2 AND 42 THEN c3.name
+                            WHEN r.catch4 BETWEEN 2 AND 42 THEN c4.name
+                            WHEN r.catch5 BETWEEN 2 AND 42 THEN c5.name
                         END AS species_name,
                         SUM(
-                            CASE WHEN r.`catch1` BETWEEN 2 AND 42 THEN COALESCE(r.`volume1`, 0) ELSE 0 END +
-                            CASE WHEN r.`catch2` BETWEEN 2 AND 42 THEN COALESCE(r.`volume2`, 0) ELSE 0 END +
-                            CASE WHEN r.`catch3` BETWEEN 2 AND 42 THEN COALESCE(r.`volume3`, 0) ELSE 0 END +
-                            CASE WHEN r.`catch4` BETWEEN 2 AND 42 THEN COALESCE(r.`volume4`, 0) ELSE 0 END +
-                            CASE WHEN r.`catch5` BETWEEN 2 AND 42 THEN COALESCE(r.`volume5`, 0) ELSE 0 END
+                            CASE WHEN r.catch1 BETWEEN 2 AND 42 THEN COALESCE(r.volume1, 0) ELSE 0 END +
+                            CASE WHEN r.catch2 BETWEEN 2 AND 42 THEN COALESCE(r.volume2, 0) ELSE 0 END +
+                            CASE WHEN r.catch3 BETWEEN 2 AND 42 THEN COALESCE(r.volume3, 0) ELSE 0 END +
+                            CASE WHEN r.catch4 BETWEEN 2 AND 42 THEN COALESCE(r.volume4, 0) ELSE 0 END +
+                            CASE WHEN r.catch5 BETWEEN 2 AND 42 THEN COALESCE(r.volume5, 0) ELSE 0 END
                         ) AS total_volume
-                    FROM `report` r
+                    FROM report r
                     LEFT JOIN catch c1 ON r.catch1 = c1.catchid
                     LEFT JOIN catch c2 ON r.catch2 = c2.catchid
                     LEFT JOIN catch c3 ON r.catch3 = c3.catchid
@@ -742,24 +747,24 @@ def admin_dashboard():
                     FROM (
                         SELECT 
                             CASE 
-                                WHEN EXTRACT(MONTH FROM r2.`date`) IS NULL THEN 'Year' 
-                                ELSE MONTHNAME(r2.`date`) 
+                                WHEN EXTRACT(MONTH FROM r2.date) IS NULL THEN 'Year' 
+                                ELSE MONTHNAME(r2.date) 
                             END AS period,
                             CASE 
-                                WHEN r2.`catch1` BETWEEN 2 AND 42 THEN c1.name
-                                WHEN r2.`catch2` BETWEEN 2 AND 42 THEN c2.name
-                                WHEN r2.`catch3` BETWEEN 2 AND 42 THEN c3.name
-                                WHEN r2.`catch4` BETWEEN 2 AND 42 THEN c4.name
-                                WHEN r2.`catch5` BETWEEN 2 AND 42 THEN c5.name
+                                WHEN r2.catch1 BETWEEN 2 AND 42 THEN c1.name
+                                WHEN r2.catch2 BETWEEN 2 AND 42 THEN c2.name
+                                WHEN r2.catch3 BETWEEN 2 AND 42 THEN c3.name
+                                WHEN r2.catch4 BETWEEN 2 AND 42 THEN c4.name
+                                WHEN r2.catch5 BETWEEN 2 AND 42 THEN c5.name
                             END AS species_name,
                             SUM(
-                                CASE WHEN r2.`catch1` BETWEEN 2 AND 42 THEN COALESCE(r2.`volume1`, 0) ELSE 0 END +
-                                CASE WHEN r2.`catch2` BETWEEN 2 AND 42 THEN COALESCE(r2.`volume2`, 0) ELSE 0 END +
-                                CASE WHEN r2.`catch3` BETWEEN 2 AND 42 THEN COALESCE(r2.`volume3`, 0) ELSE 0 END +
-                                CASE WHEN r2.`catch4` BETWEEN 2 AND 42 THEN COALESCE(r2.`volume4`, 0) ELSE 0 END +
-                                CASE WHEN r2.`catch5` BETWEEN 2 AND 42 THEN COALESCE(r2.`volume5`, 0) ELSE 0 END
+                                CASE WHEN r2.catch1 BETWEEN 2 AND 42 THEN COALESCE(r2.volume1, 0) ELSE 0 END +
+                                CASE WHEN r2.catch2 BETWEEN 2 AND 42 THEN COALESCE(r2.volume2, 0) ELSE 0 END +
+                                CASE WHEN r2.catch3 BETWEEN 2 AND 42 THEN COALESCE(r2.volume3, 0) ELSE 0 END +
+                                CASE WHEN r2.catch4 BETWEEN 2 AND 42 THEN COALESCE(r2.volume4, 0) ELSE 0 END +
+                                CASE WHEN r2.catch5 BETWEEN 2 AND 42 THEN COALESCE(r2.volume5, 0) ELSE 0 END
                             ) AS total_volume
-                        FROM `report` r2
+                        FROM report r2
                         LEFT JOIN catch c1 ON r2.catch1 = c1.catchid
                         LEFT JOIN catch c2 ON r2.catch2 = c2.catchid
                         LEFT JOIN catch c3 ON r2.catch3 = c3.catchid
@@ -782,9 +787,13 @@ def admin_dashboard():
             cursor.close()
             db.close()
 
-            # Pass both rankings to the template
-            return render_template('admin_dashboard.html', species_ranking=species_ranking, species_rankings=species_rankings)
-
+            return render_template(
+                'admin_dashboard.html',
+                species_ranking=species_ranking,
+                species_rankings=species_rankings,
+                selected_year=int(selected_year),
+                years=years
+            )
         except Exception as e:
             print("Error:", e)
             flash("There was an error loading the dashboard.", "error")
@@ -793,8 +802,7 @@ def admin_dashboard():
         flash("Unauthorized access!", "error")
         return redirect(url_for("admin_login"))
 
-
-
+#Route for Data Visualization
 @app.route('/admin/visualization_page', methods=['GET', 'POST'])
 def visualization_page():
     species_list = []
@@ -1085,22 +1093,16 @@ def export_pdf(report_id):
         db = connect_db()
         cursor = db.cursor(pymysql.cursors.DictCursor)
 
-        # Updated SQL query to include all new fields
+        # SQL query to fetch the report and catch details
         query = """
             SELECT 
                 r.reportid, r.name, r.vessel, r.frequent, 
                 DATE_FORMAT(r.date, '%%Y-%%m-%%d') AS date,
-                c1.name AS catch1_name, c2.name AS catch2_name, 
-                c3.name AS catch3_name, c4.name AS catch4_name, c5.name AS catch5_name,
-                r.volume1, r.volume2, r.volume3, r.volume4, r.volume5,
-                r.price1, r.price2, r.price3, r.price4, r.price5,
-                s1.name AS site1_name, s2.name AS site2_name, 
-                s3.name AS site3_name, s4.name AS site4_name, s5.name AS site5_name,
-                g1.name AS gear1_name, g2.name AS gear2_name, 
-                g3.name AS gear3_name, g4.name AS gear4_name, g5.name AS gear5_name,
-                r.hours1, r.hours2, r.hours3, r.hours4, r.hours5,
-                l1.name AS landing1_name, l2.name AS landing2_name, 
-                l3.name AS landing3_name, l4.name AS landing4_name, l5.name AS landing5_name
+                c1.name AS catch1_name, r.volume1, r.price1, r.hours1, g1.name AS gear1_name, s1.name AS site1_name, l1.name AS landing1_name,
+                c2.name AS catch2_name, r.volume2, r.price2, r.hours2, g2.name AS gear2_name, s2.name AS site2_name, l2.name AS landing2_name,
+                c3.name AS catch3_name, r.volume3, r.price3, r.hours3, g3.name AS gear3_name, s3.name AS site3_name, l3.name AS landing3_name,
+                c4.name AS catch4_name, r.volume4, r.price4, r.hours4, g4.name AS gear4_name, s4.name AS site4_name, l4.name AS landing4_name,
+                c5.name AS catch5_name, r.volume5, r.price5, r.hours5, g5.name AS gear5_name, s5.name AS site5_name, l5.name AS landing5_name
             FROM report r
             LEFT JOIN catch c1 ON r.catch1 = c1.catchid
             LEFT JOIN catch c2 ON r.catch2 = c2.catchid
@@ -1132,8 +1134,8 @@ def export_pdf(report_id):
             flash("Report not found.", "error")
             return redirect(url_for('view_reports'))
 
-        # Generate PDF
-        pdf = FPDF()
+        # Generate PDF in landscape orientation
+        pdf = FPDF(orientation='L', unit='mm', format='A4')  # Landscape
         pdf.add_page()
         pdf.set_font('Arial', 'B', 16)
         pdf.cell(0, 10, 'Report Details', 0, 1, 'C')
@@ -1147,36 +1149,45 @@ def export_pdf(report_id):
             ("Frequent", report["frequent"]),
             ("Date", report["date"]),
         ]
-
         for label, value in general_details:
             pdf.cell(0, 10, f"{label}: {value}", 0, 1)
 
-        # Add table for sites, gears, and landings
-        for section, prefix, count in [("Sites", "site", 5), ("Gears", "gear", 5), ("Landings", "landing", 5)]:
-            pdf.cell(0, 10, '', 0, 1)  # Add space before section
-            pdf.set_font('Arial', 'B', 12)
-            pdf.cell(50, 10, section, 0, 1)
-            pdf.set_font('Arial', '', 12)
-            for i in range(1, count + 1):
-                value = report.get(f"{prefix}{i}_name", "N/A")
-                pdf.cell(0, 10, f"{prefix.capitalize()} {i}: {value}", 0, 1)
-
-        # Add table for catches, volumes, and prices
+        # Add a table for catches
         pdf.cell(0, 10, '', 0, 1)  # Add space before table
         pdf.set_font('Arial', 'B', 12)
-        pdf.cell(50, 10, "Catch", 1)
-        pdf.cell(30, 10, "Volume", 1)
-        pdf.cell(30, 10, "Price", 1)
-        pdf.ln()
 
+        # Table header with custom color
+        pdf.set_fill_color(76, 175, 80)  # Header background color (#4CAF50)
+        pdf.set_text_color(255, 255, 255)  # White text
+        pdf.cell(40, 10, "Catch", 1, 0, 'C', True)
+        pdf.cell(30, 10, "Volume (kg)", 1, 0, 'C', True)
+        pdf.cell(30, 10, "Price/Kilo", 1, 0, 'C', True)
+        pdf.cell(40, 10, "Fishing Duration", 1, 0, 'C', True)
+        pdf.cell(40, 10, "Fishing Gear", 1, 0, 'C', True)
+        pdf.cell(50, 10, "Fishing Site", 1, 0, 'C', True)
+        pdf.cell(50, 10, "Landing Site", 1, 1, 'C', True)
+
+        # Reset text color for table data
+        pdf.set_text_color(0, 0, 0)
         pdf.set_font('Arial', '', 12)
+
+        # Add rows for each catch
         for i in range(1, 6):  # Loop through catches 1 to 5
             catch_name = report.get(f"catch{i}_name", "N/A")
-            volume = report.get(f"volume{i}", 0)
-            price = report.get(f"price{i}", 0.0)
-            pdf.cell(50, 10, catch_name if catch_name else "N/A", 1)
+            volume = report.get(f"volume{i}", "N/A")
+            price = report.get(f"price{i}", "N/A")
+            duration = report.get(f"hours{i}", "N/A")
+            gear = report.get(f"gear{i}_name", "N/A")
+            site = report.get(f"site{i}_name", "N/A")
+            landing = report.get(f"landing{i}_name", "N/A")
+
+            pdf.cell(40, 10, catch_name, 1)
             pdf.cell(30, 10, str(volume), 1)
-            pdf.cell(30, 10, f"{price:.2f}/Kilo", 1)
+            pdf.cell(30, 10, f"{price}", 1)
+            pdf.cell(40, 10, f"{duration} hrs", 1)
+            pdf.cell(40, 10, gear, 1)
+            pdf.cell(50, 10, site, 1)
+            pdf.cell(50, 10, landing, 1)
             pdf.ln()
 
         # Ensure the output directory exists
@@ -1191,7 +1202,6 @@ def export_pdf(report_id):
     else:
         flash("Unauthorized access!", "error")
         return redirect(url_for("login"))
-
 
 
     
