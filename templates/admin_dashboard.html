@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='CSS/admin.css') }}">
-    <link rel="stylesheet" href="{{url_for('static', filename='CSS/Dashboard.css') }}">
-    
-    <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/admin.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/Dashboard.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
 </head>
 <body>
     <header class="top-bar">
@@ -16,9 +15,19 @@
     <main class="content">
         <h1>Species Ranking</h1>
 
-        <!-- Yearly Ranking Table -->
+        <!-- Year Selection and Yearly Ranking Table -->
         <section class="table-section">
-            <h2>2022 Catch Ranking</h2>
+            <form method="POST" action="{{ url_for('admin_dashboard') }}">
+                <label for="year">Select Year:</label>
+                <select name="year" id="year">
+                    {% for year in years %}
+                        <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+                <button class="filter" type="submit">Filter</button>
+            </form>
+
+            <h2>{{ selected_year }} Catch Ranking</h2>
             <table class="styled-table">
                 <thead>
                     <tr>
@@ -37,6 +46,7 @@
             </table>
         </section>
 
+        <!-- Monthly Ranking Table -->
         <section class="table-section">
             <h2>Species Ranking by Total Catch Volume</h2>
             <table class="styled-table">
@@ -52,7 +62,7 @@
                     <tr>
                         <td>{{ ranking.period }}</td>
                         <td>{{ ranking.species_name }}</td>
-                        <td>{{ ranking.total_volume }} Kilo</td>
+                        <td>{{ ranking.total_volume }} Kilos</td>
                     </tr>
                     {% endfor %}
                 </tbody>
