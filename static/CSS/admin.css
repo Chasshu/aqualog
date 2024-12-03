@@ -123,3 +123,49 @@ h1 {
 .hide-button:hover {
     background-color: #3a823a;
 }
+
+.year-selection-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.year-selection-container h2 {
+    margin: 0;
+    font-size: 1.6em;
+    color: #4A9B4A;
+    font-weight: bold;
+}
+
+.year-selection-container form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.year-selection-container label {
+    font-size: 1em;
+    color: #333;
+}
+
+.year-selection-container select {
+    padding: 5px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.year-selection-container button.filter {
+    background-color: #4A9B4A;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.year-selection-container button.filter:hover {
+    background-color: #3a823a;
+}
