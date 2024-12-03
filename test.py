@@ -644,7 +644,7 @@ def report():
             cursor.execute(sql, values)
             db.commit()
             flash("Report submitted successfully!", "success")
-            return redirect(url_for('report'))
+            return redirect(url_for('my_reports'))
     except Exception as e:
         app.logger.error(f"Error: {str(e)}")
         flash("An error occurred while processing your report.", "error")
