@@ -367,7 +367,6 @@
 
     <script>
         document.getElementById('submitButton').addEventListener('click', function (e) {
-            e.preventDefault();
             const form = document.getElementById('reportForm');
             const requiredFields = form.querySelectorAll('input[required], select[required]');
             let allFieldsValid = true;
@@ -392,21 +391,16 @@
         });
 
         document.getElementById('closeButton').addEventListener('click', function () {
-            const form = document.getElementById('reportForm');
-            document.getElementById('modal').style.display = 'none';
-            form.submit();
-            
+            // Directly submit the form without hiding the modal first
+            document.getElementById('reportForm').submit();
         });
 
-
-        document.querySelectorAll('.catch-dropdown-trigger').forEach(trigger => {
-            trigger.addEventListener('click', function() {
-                const catchNumber = this.dataset.catch;
-                const dropdown = document.querySelector(`.catch-dropdown[data-catch="${catchNumber}"]`);
-                dropdown.classList.toggle('active');
-            });
+        // Optional: Add form submission event listener to handle server-side submission
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            // Optional: Add any additional validation or processing before form submission
+            // e.g., disable submit button to prevent multiple submissions
+            document.getElementById('submitButton').disabled = true;
         });
-        
     </script>
 </body>
 </html>
