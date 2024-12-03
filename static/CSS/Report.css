@@ -40,7 +40,7 @@ body {
 .form-title{
     color: #444;
     /* margin-bottom: 20px; */
-    font-size: 40px;
+    font-size: 30px;
     font-weight: bold;
     
 }
@@ -124,12 +124,22 @@ input, select, button {
     box-sizing: border-box;
 }
 
+.center-button{
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .proceed {
     background-color: #4CAF50;
     color: white;
     border: none;
     cursor: pointer;
     transition: background-color 0.3s;
+    width: 20%;
+    border-radius: 40px;
+    
 }
 
 .proceed:hover {
@@ -258,4 +268,41 @@ hr{
     color: red;
     font-size: 14px;
     margin-top: 10px;
+}
+
+
+.catch-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    gap: 5px;
+
+    background-color: #2d6a4f;
+    margin-bottom: 10px;
+    padding: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 18px;
+    border-radius: 8px;
+}
+
+
+.catch-dropdown-trigger::after {
+    content: '▼';
+    font-size: 12px;
+    color: white;
+    margin-left: 10px;
+}
+.catch-dropdown {
+    display: none;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.catch-dropdown.active {
+    display: block;
 }
