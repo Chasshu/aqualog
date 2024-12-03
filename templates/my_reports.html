@@ -4,9 +4,180 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Species Reports</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='CSS/myreport.css')}}">
-    <link rel="stylesheet" href="../static/CSS/myreport.css">
-    <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg')}}">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f4f4f4;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: #2e7d32;
+            color: white;
+            padding: 1rem;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-button {
+            text-decoration: none;
+            color: white;
+            background-color: #1b5e20;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #43a047;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .report-section {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .report-section h2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: #2e7d32;
+            color: white;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .report-section h2::after {
+            content: '▼';
+            transition: transform 0.3s ease;
+        }
+
+        .report-section h2.active::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-content {
+            display: none;
+            padding: 1rem;
+        }
+
+        .dropdown-content.active {
+            display: block;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .reports-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .reports-table th, 
+        .reports-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .reports-table th {
+            background-color: #2e7d32;
+            color: white;
+            font-weight: 600;
+        }
+
+        .no-reports {
+            text-align: center;
+            color: #757575;
+            padding: 1rem;
+        }
+
+        /* Mobile-Specific Responsive Design */
+        @media screen and (max-width: 768px) {
+            .reports-table thead {
+                display: none;
+            }
+
+            .reports-table, 
+            .reports-table tbody, 
+            .reports-table tr, 
+            .reports-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .reports-table tr {
+                margin-bottom: 1rem;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                overflow: hidden;
+            }
+
+            .reports-table td {
+                text-align: right;
+                position: relative;
+                padding-left: 50%;
+            }
+
+            .reports-table td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .header-content {
+                justify-content: flex-start;
+            }
+
+            .header h1 {
+                width: 100%;
+                margin-top: 0.5rem;
+                font-size: 1.2rem;
+            }
+
+            .back-button {
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -18,85 +189,107 @@
     <main class="container">
         <div class="report-section">
             <h2>My Pending Reports</h2>
-            {% if pending_reports %}
-            <div class="table-responsive">
-                <table class="reports-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Vessel</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for report in pending_reports %}
-                        <tr>
-                            <td data-label="Name">{{ report.name }}</td>
-                            <td data-label="Vessel">{{ report.vessel }}</td>
-                            <td data-label="Date">{{ report.date }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="dropdown-content">
+                {% if pending_reports %}
+                <div class="table-responsive">
+                    <table class="reports-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Vessel</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report in pending_reports %}
+                            <tr>
+                                <td data-label="Name">{{ report.name }}</td>
+                                <td data-label="Vessel">{{ report.vessel }}</td>
+                                <td data-label="Date">{{ report.date }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="no-reports">No pending reports found.</p>
+                {% endif %}
             </div>
-            {% else %}
-            <p class="no-reports">No pending reports found.</p>
-            {% endif %}
         </div>
 
         <div class="report-section">
             <h2>Approved Reports</h2>
-            {% if approved_reports %}
-            <div class="table-responsive">
-                <table class="reports-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Vessel</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for report in approved_reports %}
-                        <tr>
-                            <td data-label="Name">{{ report.name }}</td>
-                            <td data-label="Vessel">{{ report.vessel }}</td>
-                            <td data-label="Date">{{ report.date }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="dropdown-content">
+                {% if approved_reports %}
+                <div class="table-responsive">
+                    <table class="reports-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Vessel</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report in approved_reports %}
+                            <tr>
+                                <td data-label="Name">{{ report.name }}</td>
+                                <td data-label="Vessel">{{ report.vessel }}</td>
+                                <td data-label="Date">{{ report.date }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="no-reports">No approved reports found.</p>
+                {% endif %}
             </div>
-            {% else %}
-            <p class="no-reports">No approved reports found.</p>
-            {% endif %}
         </div>
 
         <div class="report-section">
             <h2>Declined Reports</h2>
-            {% if declined_reports %}
-            <div class="table-responsive">
-                <table class="reports-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for report in declined_reports %}
-                        <tr>
-                            <td data-label="Name">{{ report.name }}</td>
-                            <td data-label="Date">{{ report.date }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="dropdown-content">
+                {% if declined_reports %}
+                <div class="table-responsive">
+                    <table class="reports-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report in declined_reports %}
+                            <tr>
+                                <td data-label="Name">{{ report.name }}</td>
+                                <td data-label="Date">{{ report.date }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="no-reports">No declined reports found.</p>
+                {% endif %}
             </div>
-            {% else %}
-            <p class="no-reports">No declined reports found.</p>
-            {% endif %}
         </div>
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reportSections = document.querySelectorAll('.report-section');
+            
+            reportSections.forEach(section => {
+                const heading = section.querySelector('h2');
+                const dropdownContent = section.querySelector('.dropdown-content');
+                
+                heading.addEventListener('click', () => {
+                    heading.classList.toggle('active');
+                    dropdownContent.classList.toggle('active');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
