@@ -99,3 +99,10 @@ table tr:nth-child(odd) {
     border-radius: 5px;
     flex: 1;
 }
+
+.search-bar select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-left: 10px;
+}

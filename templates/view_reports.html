@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='CSS/viewreports.css') }}">
     <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
 </head>
-
 <body>
     <div class="top-bar">
         <div class="left-bar">
@@ -19,6 +18,27 @@
     <div class="search-bar">
         <input type="text" id="searchName" placeholder="Search by Name" onkeyup="filterReports()">
         <input type="text" id="searchVessel" placeholder="Search by Vessel" onkeyup="filterReports()">
+        <form method="POST">
+            <select name="month">
+                <option value="">Select Month</option>
+                {% for date in dates %}
+                <option value="{{ date['month'] }}" {% if selected_month == date['month']|string %}selected{% endif %}>
+                    {{ date['month']|date("F") }}
+                </option>
+                {% endfor %}
+            </select>
+            
+            <select name="year">
+                <option value="">Select Year</option>
+                {% for date in dates %}
+                <option value="{{ date['year'] }}" {% if selected_year == date['year']|string %}selected{% endif %}>
+                    {{ date['year'] }}
+                </option>
+                {% endfor %}
+            </select>
+            
+            <button type="submit">Filter</button>
+        </form>
     </div>
 
     <table border="1" id="reportsTable">
@@ -27,6 +47,8 @@
                 <th>Report ID</th>
                 <th>Name</th>
                 <th>Vessel</th>
+                <th>Month</th>
+                <th>Year</th>
                 <th>Export</th>
             </tr>
         </thead>
@@ -36,6 +58,8 @@
                 <td>{{ report.reportid }}</td>
                 <td>{{ report.name }}</td>
                 <td>{{ report.vessel }}</td>
+                <td>{{ report.month }}</td>
+                <td>{{ report.year }}</td>
                 <td>
                     <a href="{{ url_for('export_pdf', report_id=report.reportid) }}" class="pdf-button">Export to PDF</a>
                 </td>
@@ -48,19 +72,28 @@
         function filterReports() {
             const nameInput = document.getElementById('searchName').value.toLowerCase();
             const vesselInput = document.getElementById('searchVessel').value.toLowerCase();
+            const monthInput = document.getElementById('searchMonth').value.toLowerCase();
+            const yearInput = document.getElementById('searchYear').value.toLowerCase();
             const table = document.getElementById('reportsTable');
             const rows = table.getElementsByTagName('tr');
 
             for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header
                 const nameCell = rows[i].getElementsByTagName('td')[1];
                 const vesselCell = rows[i].getElementsByTagName('td')[2];
-                if (nameCell && vesselCell) {
+                const monthCell = rows[i].getElementsByTagName('td')[3];
+                const yearCell = rows[i].getElementsByTagName('td')[4];
+
+                if (nameCell && vesselCell && monthCell && yearCell) {
                     const nameText = nameCell.textContent || nameCell.innerText;
                     const vesselText = vesselCell.textContent || vesselCell.innerText;
+                    const monthText = monthCell.textContent || monthCell.innerText;
+                    const yearText = yearCell.textContent || yearCell.innerText;
 
                     if (
                         nameText.toLowerCase().includes(nameInput) &&
-                        vesselText.toLowerCase().includes(vesselInput)
+                        vesselText.toLowerCase().includes(vesselInput) &&
+                        (monthInput === '' || monthText.toLowerCase() === monthInput) &&
+                        (yearInput === '' || yearText.toLowerCase() === yearInput)
                     ) {
                         rows[i].style.display = '';
                     } else {
