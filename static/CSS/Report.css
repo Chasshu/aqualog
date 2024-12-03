@@ -137,7 +137,7 @@ input, select, button {
     border: none;
     cursor: pointer;
     transition: background-color 0.3s;
-    width: 20%;
+    width: 60%;
     border-radius: 40px;
     
 }
