@@ -86,3 +86,16 @@ table tr:nth-child(odd) {
 .export-button:hover {
     background-color: #7ea9819a;
 }
+
+.search-bar {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+}
+
+.search-bar input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    flex: 1;
+}
