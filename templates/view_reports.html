@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>View Approved Reports</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='CSS/viewreports.css') }}">
+    <link rel="stylesheet" href="../static/CSS/viewreports.css"
     <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
 </head>
 
@@ -27,6 +28,7 @@
                 <th>Report ID</th>
                 <th>Name</th>
                 <th>Vessel</th>
+                <th>Date</th>
                 <th>Export</th>
             </tr>
         </thead>
@@ -36,6 +38,7 @@
                 <td>{{ report.reportid }}</td>
                 <td>{{ report.name }}</td>
                 <td>{{ report.vessel }}</td>
+                <td>{{ report.date}}</td>
                 <td>
                     <a href="{{ url_for('export_pdf', report_id=report.reportid) }}" class="pdf-button">Export to PDF</a>
                 </td>
