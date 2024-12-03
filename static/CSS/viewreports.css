@@ -91,6 +91,7 @@ table tr:nth-child(odd) {
     margin: 20px 0;
     display: flex;
     gap: 10px;
+    width: 90%;
 }
 
 .search-bar input {
