@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Visualization</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='CSS/visualization.css') }}">
-
-    <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
+    <link rel="icon" href="{{ url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
 </head>
 <body>
-    <!-- green bar-->
+    <!-- Header -->
     <div class="header-bar">
         <h1>Data Visualization</h1>
     </div>
@@ -18,7 +17,8 @@
         <!-- Form Container -->
         <div class="form-container">
             <form method="POST" action="{{ url_for('visualization_page') }}">
-                <label for="species">Select a species:</label>
+                <!-- Dropdown for Volume -->
+                <label for="species">Select a species (Volume): </label>
                 <select id="species" name="species">
                     {% for species in species_list %}
                         <option value="{{ species['catchid'] }}">{{ species['name'] }}</option>
@@ -31,16 +31,26 @@
                         <option value="{{ year }}">{{ year }}</option>
                     {% endfor %}
                 </select>
+
+                <label for="graph_type">Select graph type:</label>
+                <select id="graph_type" name="graph_type">
+                    <option value="volume">Volume</option>
+                    <option value="frequency">Frequency</option>
+                </select>
+
                 <button type="submit">Generate Graph</button>
             </form>
         </div>
 
-        <!-- container for the graph-->
+        <!-- Graph Container -->
         <div class="graph-container">
             {% if plot_url %}
-                <img src="data:image/png;base64,{{ plot_url }}" alt="Total Catches Per Month">
+                <img src="data:image/png;base64,{{ plot_url }}" alt="Graph">
             {% else %}
                 <p>No data available to display the graph.</p>
+                {% if no_data_message %}
+                    <p>{{ no_data_message }}</p>
+                {% endif %}
             {% endif %}
         </div>
     </div>

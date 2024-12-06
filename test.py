@@ -13,7 +13,7 @@ app.secret_key = "your_secret_key"  # Change this to your secret key
 
 # Database connection
 def connect_db():
-    return pymysql.connect(host='sql12.freesqldatabase.com', user='sql12747991', password='FGUrVzuy7A', database='sql12747991')
+    return pymysql.connect(host='sql12.freesqldatabase.com', user='sql12749753', password='a52CtDKya1', database='sql12749753')
 
 # Function to sanitize input data<input type="password" name="password" placeholder="Password" required>
 def validate(data):
@@ -805,13 +805,11 @@ def admin_dashboard():
 #Route for Data Visualization
 @app.route('/admin/visualization_page', methods=['GET', 'POST'])
 def visualization_page():
-    species_list = []
-    df_default = pd.DataFrame()  # Data for the overview graph
-    df_selected = pd.DataFrame()  # Data for the selected species and year
+    species_list = []  # For dropdowns
     plot_url = None
-    no_data_message = None  # Message for cases with no data
+    no_data_message = None
 
-    # Fetch species list for the dropdown
+    # Fetch species list for dropdowns
     try:
         connection = connect_db()
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
@@ -823,132 +821,200 @@ def visualization_page():
         if connection:
             connection.close()
 
-    # Default data for the overview graph
-    try:
-        connection = connect_db()
-        query_default = """
-        SELECT 
-            s.name AS species_name, 
-            EXTRACT(MONTH FROM r.date) AS month, 
-            COUNT(
-                CASE 
-                    WHEN r.catch1 = s.catchid THEN 1 
-                    WHEN r.catch2 = s.catchid THEN 1 
-                    WHEN r.catch3 = s.catchid THEN 1 
-                    WHEN r.catch4 = s.catchid THEN 1 
-                    WHEN r.catch5 = s.catchid THEN 1 
-                END
-            ) AS frequency
-        FROM report r
-        JOIN catch s 
-            ON s.catchid IN (r.catch1, r.catch2, r.catch3, r.catch4, r.catch5)
-        WHERE s.catchid != 1
-        GROUP BY s.name, EXTRACT(MONTH FROM r.date)
-        ORDER BY s.name, month;
-        """
-        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-            cursor.execute(query_default)
-            result_default = cursor.fetchall()
-            df_default = pd.DataFrame(result_default)
-    except Exception as e:
-        print(f"Error fetching default data: {e}")
-    finally:
-        if connection:
-            connection.close()
+    # Generate the overview graph (default view)
+    if request.method == 'GET':
+        try:
+            connection = connect_db()
+            query_overview = """
+            SELECT 
+                s.name AS species_name, 
+                EXTRACT(MONTH FROM r.date) AS month, 
+                COUNT(
+                    CASE 
+                        WHEN r.catch1 = s.catchid THEN 1 
+                        WHEN r.catch2 = s.catchid THEN 1 
+                        WHEN r.catch3 = s.catchid THEN 1 
+                        WHEN r.catch4 = s.catchid THEN 1 
+                        WHEN r.catch5 = s.catchid THEN 1 
+                    END
+                ) AS frequency
+            FROM report r
+            JOIN catch s 
+                ON s.catchid IN (r.catch1, r.catch2, r.catch3, r.catch4, r.catch5)
+            WHERE s.catchid != 1
+            GROUP BY s.name, EXTRACT(MONTH FROM r.date)
+            ORDER BY s.name, month;
+            """
+            with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+                cursor.execute(query_overview)
+                result_overview = cursor.fetchall()
 
-    # Fetch data for a selected species and year if form is submitted
+            df_overview = pd.DataFrame(result_overview)
+            if not df_overview.empty:
+                # Plot the overview graph
+                plt.figure(figsize=(12, 8))
+                species_names = df_overview['species_name'].unique()
+                for species_name, group_data in df_overview.groupby('species_name'):
+                    plt.plot(
+                        group_data['month'],
+                        group_data['frequency'],
+                        marker='o',
+                        linestyle='-',
+                        label=f"{species_name}"
+                    )
+                plt.title('Overview: Monthly Catch Frequency')
+                plt.xlabel('Month')
+                plt.ylabel('Frequency')
+                plt.xticks(range(1, 13))
+                plt.legend(title='Species', bbox_to_anchor=(1.05, 1), loc='upper left')
+                plt.grid(True)
+                plt.tight_layout()
+
+                # Save the plot as base64
+                img = io.BytesIO()
+                plt.savefig(img, format='png')
+                plt.close()
+                img.seek(0)
+                plot_url = base64.b64encode(img.getvalue()).decode()
+        except Exception as e:
+            print(f"Error generating the overview graph: {e}")
+        finally:
+            if connection:
+                connection.close()
+
+    # Handle form submission (POST method)
     if request.method == 'POST':
         selected_species = request.form.get('species')
         selected_year = request.form.get('year')
+        graph_type = request.form.get('graph_type')  # Either 'volume' or 'frequency'
         selected_species_name = next(
             (species['name'] for species in species_list if str(species['catchid']) == selected_species),
             "Unknown Species"
         )
 
-        try:
-            connection = connect_db()
-            query_selected = """
-            SELECT 
-                EXTRACT(MONTH FROM r.date) AS month,
-                SUM(
-                    CASE 
-                        WHEN r.catch1 = %s THEN r.volume1
-                        WHEN r.catch2 = %s THEN r.volume2
-                        WHEN r.catch3 = %s THEN r.volume3
-                        WHEN r.catch4 = %s THEN r.volume4
-                        WHEN r.catch5 = %s THEN r.volume5
-                    END
-                ) AS total_volume
-            FROM report r
-            WHERE %s IN (r.catch1, r.catch2, r.catch3, r.catch4, r.catch5)
-            AND YEAR(r.date) = %s
-            GROUP BY month
-            ORDER BY month;
-            """
-            with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-                cursor.execute(query_selected, (selected_species,) * 6 + (selected_year,))
-                result_selected = cursor.fetchall()
-                df_selected = pd.DataFrame(result_selected)
+        if graph_type == 'volume':
+            # Generate the volume graph
+            try:
+                connection = connect_db()
+                query_volume = """
+                SELECT 
+                    EXTRACT(MONTH FROM r.date) AS month,
+                    SUM(
+                        CASE 
+                            WHEN r.catch1 = %s THEN r.volume1
+                            WHEN r.catch2 = %s THEN r.volume2
+                            WHEN r.catch3 = %s THEN r.volume3
+                            WHEN r.catch4 = %s THEN r.volume4
+                            WHEN r.catch5 = %s THEN r.volume5
+                        END
+                    ) AS total_volume
+                FROM report r
+                WHERE %s IN (r.catch1, r.catch2, r.catch3, r.catch4, r.catch5)
+                AND YEAR(r.date) = %s
+                GROUP BY month
+                ORDER BY month;
+                """
+                with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+                    cursor.execute(query_volume, (selected_species,) * 6 + (selected_year,))
+                    result_volume = cursor.fetchall()
 
-            if df_selected.empty:
-                no_data_message = f"No data available for {selected_species_name} in {selected_year}."
+                df_volume = pd.DataFrame(result_volume)
+                if df_volume.empty:
+                    no_data_message = f"No data available for {selected_species_name} in {selected_year}."
+                else:
+                    # Plot the volume graph
+                    plt.figure(figsize=(12, 8))
+                    plt.plot(
+                        df_volume['month'],
+                        df_volume['total_volume'],
+                        marker='o',
+                        linestyle='-',
+                        color='blue',
+                        linewidth=2,
+                        label=f"{selected_species_name} ({selected_year})"
+                    )
+                    plt.title(f'{selected_species_name} - Monthly Catch Volume ({selected_year})')
+                    plt.xlabel('Month')
+                    plt.ylabel('Volume')
+                    plt.xticks(range(1, 13))
+                    plt.legend(loc='upper right')
+                    plt.grid(True)
+                    plt.tight_layout()
 
-        except Exception as e:
-            print(f"Error fetching selected species and year data: {e}")
-        finally:
-            if connection:
-                connection.close()
+                    # Save the plot as base64
+                    img = io.BytesIO()
+                    plt.savefig(img, format='png')
+                    plt.close()
+                    img.seek(0)
+                    plot_url = base64.b64encode(img.getvalue()).decode()
 
-    # Create the plot
-    try:
-        plt.figure(figsize=(12, 8))
+            except Exception as e:
+                print(f"Error generating volume graph: {e}")
+            finally:
+                if connection:
+                    connection.close()
 
-        if request.method == 'GET' and not df_default.empty:
-            # Overview graph: plot the default frequency data
-            for species_name, group_data in df_default.groupby('species_name'):
-                plt.plot(
-                    group_data['month'],
-                    group_data['frequency'],
-                    linestyle='--',
-                    label=f"{species_name}"
-                )
-            plt.title('Overview: Monthly Catch Frequency')
-            plt.xlabel('Month')
-            plt.ylabel('Frequency')
-            plt.xticks(range(1, 13))
-            plt.legend(title='Species Name', bbox_to_anchor=(1.05, 1), loc='upper left')
-            plt.grid(True)
-            plt.tight_layout()
+        elif graph_type == 'frequency':
+            # Generate the frequency graph
+            try:
+                connection = connect_db()
+                query_frequency = """
+                SELECT 
+                    EXTRACT(MONTH FROM r.date) AS month,
+                    COUNT(
+                        CASE 
+                            WHEN r.catch1 = %s THEN 1 
+                            WHEN r.catch2 = %s THEN 1 
+                            WHEN r.catch3 = %s THEN 1 
+                            WHEN r.catch4 = %s THEN 1 
+                            WHEN r.catch5 = %s THEN 1 
+                        END
+                    ) AS frequency
+                FROM report r
+                WHERE %s IN (r.catch1, r.catch2, r.catch3, r.catch4, r.catch5)
+                AND YEAR(r.date) = %s
+                GROUP BY month
+                ORDER BY month;
+                """
+                with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+                    cursor.execute(query_frequency, (selected_species,) * 6 + (selected_year,))
+                    result_frequency = cursor.fetchall()
 
-        elif request.method == 'POST' and not df_selected.empty:
-            # Plot a new graph for the selected species and year (volume)
-            plt.plot(
-                df_selected['month'],
-                df_selected['total_volume'],
-                marker='o',
-                linestyle='-',
-                color='blue',
-                linewidth=2,
-                label=f"{selected_species_name} (Year {selected_year})"
-            )
-            plt.title(f'{selected_species_name} - Monthly Catch Volume ({selected_year})')
-            plt.xlabel('Month')
-            plt.ylabel('Volume')
-            plt.xticks(range(1, 13))
-            plt.legend(loc='upper right')
-            plt.grid(True)
-            plt.tight_layout()
+                df_frequency = pd.DataFrame(result_frequency)
+                if df_frequency.empty:
+                    no_data_message = f"No data available for {selected_species_name} in {selected_year}."
+                else:
+                    # Plot the frequency graph
+                    plt.figure(figsize=(12, 8))
+                    plt.plot(
+                        df_frequency['month'],
+                        df_frequency['frequency'],
+                        marker='o',
+                        linestyle='-',
+                        color='red',
+                        linewidth=2,
+                        label=f"{selected_species_name} ({selected_year})"
+                    )
+                    plt.title(f'{selected_species_name} - Monthly Catch Frequency ({selected_year})')
+                    plt.xlabel('Month')
+                    plt.ylabel('Frequency')
+                    plt.xticks(range(1, 13))
+                    plt.legend(loc='upper right')
+                    plt.grid(True)
+                    plt.tight_layout()
 
-        # Save the plot to a BytesIO object
-        img = io.BytesIO()
-        plt.savefig(img, format='png')
-        plt.close()
-        img.seek(0)
+                    # Save the plot as base64
+                    img = io.BytesIO()
+                    plt.savefig(img, format='png')
+                    plt.close()
+                    img.seek(0)
+                    plot_url = base64.b64encode(img.getvalue()).decode()
 
-        # Encode the image to base64 to embed in HTML
-        plot_url = base64.b64encode(img.getvalue()).decode()
-    except Exception as e:
-        print(f"Error generating the plot: {e}")
+            except Exception as e:
+                print(f"Error generating frequency graph: {e}")
+            finally:
+                if connection:
+                    connection.close()
 
     # Render the template
     return render_template(
@@ -957,7 +1023,6 @@ def visualization_page():
         plot_url=plot_url,
         no_data_message=no_data_message
     )
-
 
 # Admin geo-tagging page
 @app.route('/admin/geo-tagging')
