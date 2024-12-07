@@ -45,14 +45,13 @@ def login():
             session['role'] = 'user'
             flash("LOGIN SUCCESSFULLY!", "success")
             return redirect(url_for("report"))
-        else:
-            flash("USER DOESN'T EXIST!", "error")
+    else:
 
-            #changed by ryo
-    return render_template("""
+        #inayos
+        return render_template_string("""
             <script>
                 alert("USER IS NOT YET VERIFIED!");
-                window.location.href = '/login';  // Redirect back to the login page
+                window.location.href = '/login';
             </script>
         """)
 
