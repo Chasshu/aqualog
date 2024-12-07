@@ -45,15 +45,9 @@ def login():
             session['role'] = 'user'
             flash("LOGIN SUCCESSFULLY!", "success")
             return redirect(url_for("report"))
-    else:
-
-        #inayos
-        return render_template_string("""
-            <script>
-                alert("USER IS NOT YET VERIFIED!");
-                window.location.href = '/login';
-            </script>
-        """)
+            else:
+            flash("USER DOESN'T EXIST!", "error")
+    return render_template('login.html')
 
 # Route for admin login page
 @app.route('/admin', methods=['GET', 'POST'])
