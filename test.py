@@ -45,7 +45,7 @@ def login():
             session['role'] = 'user'
             flash("LOGIN SUCCESSFULLY!", "success")
             return redirect(url_for("report"))
-            else:
+        else:
             flash("USER DOESN'T EXIST!", "error")
     return render_template('login.html')
 
