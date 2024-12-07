@@ -47,7 +47,14 @@ def login():
             return redirect(url_for("report"))
         else:
             flash("USER DOESN'T EXIST!", "error")
-    return render_template('login.html')
+
+            #changed by ryo
+    return render_template("""
+            <script>
+                alert("USER IS NOT YET VERIFIED!");
+                window.location.href = '/login';  // Redirect back to the login page
+            </script>
+        """)
 
 # Route for admin login page
 @app.route('/admin', methods=['GET', 'POST'])
