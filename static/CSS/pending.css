@@ -74,6 +74,7 @@ table tr:nth-child(odd) {
 .view, .approve, .reject{
     padding: 8px; 
     border-radius: 6px;
+    margin-right: 8px;
 }
 
 .view{
