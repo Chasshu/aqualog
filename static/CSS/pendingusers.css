@@ -75,3 +75,26 @@ button:hover {
 form {
     display: inline-block;
 }
+
+.approve, .delete{
+    padding: 8px; 
+    border-radius: 6px;
+    margin-right: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: opacity 0.125s;
+}
+
+.approve:hover, .delete:hover{
+    opacity: 0.7;
+}
+
+.approve{
+    background-color: #008000;
+    color: white;
+}
+
+.delete{
+    background-color: #bc4749;
+    color: white;
+}

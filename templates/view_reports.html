@@ -39,7 +39,7 @@
                 <td>{{ report.vessel }}</td>
                 <td>{{ report.date}}</td>
                 <td>
-                    <a href="{{ url_for('export_pdf', report_id=report.reportid) }}" class="pdf-button">Export to PDF</a>
+                    <a class="pdf" href="{{ url_for('export_pdf', report_id=report.reportid) }}" class="pdf-button">Export to PDF</a>
                 </td>
             </tr>
             {% endfor %}
