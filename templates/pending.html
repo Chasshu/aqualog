@@ -16,16 +16,18 @@
     <table>
         <tr>
             <th>Report ID</th>
+            <th>Name</th>
             <th>Actions</th>
         </tr>
         {% for report in reports %}
         <tr>
             <td>{{ report.reportid }}</td>
+            <td>{{ report.name }}</td>
             <td>
-                <a href="{{ url_for('viewreport', reportid=report.reportid) }}">View</a> |
+                <a class="view" href="{{ url_for('viewreport', reportid=report.reportid) }}">View</a> |
                 {% if session.role == 'admin' %}
-                <a href="{{ url_for('approvereport', reportid=report.reportid) }}">Approve</a> |
-                <a href="{{ url_for('delete_report', reportid=report.reportid) }}">Reject</a>
+                <a class="approve" href="{{ url_for('approvereport', reportid=report.reportid) }}">Approve</a> |
+                <a class="reject" href="{{ url_for('delete_report', reportid=report.reportid) }}">Reject</a>
                 {% endif %}
             </td>
         </tr>
