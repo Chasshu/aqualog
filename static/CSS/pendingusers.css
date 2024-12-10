@@ -85,7 +85,13 @@ form {
     transition: opacity 0.125s;
 }
 
-.approve:hover, .delete:hover{
+.approve:hover{
+    background-color: #008000;
+    opacity: 0.7;
+} 
+
+.delete:hover{
+    background-color: #bc4749;
     opacity: 0.7;
 }
 
