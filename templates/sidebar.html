@@ -21,41 +21,38 @@
             <div class="navbar">
                 <!-- Sidebar navigation links -->
                 <a href="{{ url_for('admin_dashboard') }}" data-page="admin_dashboard">
-                    <img src="{{ url_for('static', filename='Assets/dashboard.svg') }}" alt="Dashboard Icon" class="icon">
+                    <img title="DASHBOARD" src="{{ url_for('static', filename='Assets/dashboard.svg') }}" alt="Dashboard Icon" class="icon">
                     <span>Dashboard</span>
                 </a>
-                <a href="{{ url_for('admin_register') }}" data-page="pending">
-                    <img src="{{ url_for('static', filename='Assets/new-admin.svg') }}" alt="Pending Icon" class="icon">
-                    <span>Register New Admin</span>
-                </a>
+
                 <a href="{{ url_for('pending') }}" data-page="pending">
-                    <img src="{{ url_for('static', filename='Assets/report.svg') }}" alt="Pending Icon" class="icon">
+                    <img title="PENDING REPORTS" src="{{ url_for('static', filename='Assets/report.svg') }}" alt="Pending Icon" class="icon">
                     <span>Pending Reports</span>
                 </a>
                 <a href="{{ url_for('pending_users') }}" data-page="pending">
-                    <img src="{{ url_for('static', filename='Assets/pending-user.svg') }}" alt="Pending Icon" class="icon">
+                    <img title="PENDING USERS" src="{{ url_for('static', filename='Assets/pending-user.svg') }}" alt="Pending Icon" class="icon">
                     <span>Pending Users</span>
                 </a>
                 <a href="{{ url_for('userlist') }}" data-page="pending">
-                    <img src="{{ url_for('static', filename='Assets/user-list.svg') }}"  class="icon">
+                    <img title="USER LIST" src="{{ url_for('static', filename='Assets/user-list.svg') }}"  class="icon">
                     <span>User List</span>
                 </a>
                 <a href="{{ url_for('visualization_page') }}" data-page="visualization">
-                    <img src="{{ url_for('static', filename='Assets/graph.svg') }}" alt="Visualization Icon" class="icon">
+                    <img title="DATA VISUALIZATION" src="{{ url_for('static', filename='Assets/graph.svg') }}" alt="Visualization Icon" class="icon">
                     <span>Data Visualization</span>
                 </a>
                 <a href="{{ url_for('geo_tagging') }}" data-page="geo_tagging">
-                    <img src="{{ url_for('static', filename='Assets/loc-new.svg') }}" alt="Geo Tagging Icon" class="icon">
-                    <span>Geo Tagging</span>
+                    <img title="GEO-TAGGING" src="{{ url_for('static', filename='Assets/loc-new.svg') }}" alt="Geo Tagging Icon" class="icon">
+                    <span>Geo-Tagging</span>
                 </a>
                 <a href="{{ url_for('view_reports') }}" data-page="view_reports">
-                    <img src="{{ url_for('static', filename='Assets/viewr.svg') }}" alt="Reports Icon" class="icon">
+                    <img title="VIEW REPORTS" src="{{ url_for('static', filename='Assets/viewr.svg') }}" alt="Reports Icon" class="icon">
                     <span>View Reports</span>
                 </a>
             </div>
             <div class="logout-container">
                 <a href="{{ url_for('login') }}" data-page="logout">
-                    <img src="{{ url_for('static', filename='Assets/logout.svg') }}" alt="Logout Icon" class="icon">
+                    <img title="LOGOUT" src="{{ url_for('static', filename='Assets/logout.svg') }}" alt="Logout Icon" class="icon">
                     <span>Logout</span>
                 </a>
             </div>
