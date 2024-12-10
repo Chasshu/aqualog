@@ -57,16 +57,36 @@ td {
 }
 
 a {
-    color: #5BB35F; 
     text-decoration: none;
     font-weight: bold;
+    transition: opacity 0.125s;
 }
 
-a:hover {
-    text-decoration: underline;
+a:hover{
+    opacity: 0.7;
 }
 
 table tr:nth-child(odd) {
     background-color: #e8f9e4;
     color: #fff; 
+}
+
+.view, .approve, .reject{
+    padding: 8px; 
+    border-radius: 6px;
+}
+
+.view{
+    background-color: #a4ac86;
+    color: white;
+}
+
+.approve{
+    background-color: #008000;
+    color: white;
+}
+
+.reject{
+    background-color: #bc4749;
+    color: white;
 }

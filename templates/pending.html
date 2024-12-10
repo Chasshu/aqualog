@@ -6,23 +6,35 @@
     <link rel="stylesheet" href="{{url_for('static', filename='CSS/pending.css') }}">
 
     <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
+
+    <link rel="stylesheet" href="../static/CSS/pending.css">
 </head>
 <body>
 
+
+
     <div class="top-bar">
         <h1>Pending Reports</h1>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search by Name or Vessel" onkeyup="filterReports()">
     </div>
 
     <table>
         <tr>
             <th>Report ID</th>
             <th>Name</th>
+            <th>Vessel Name</th>
+            <th>Date</th>
             <th>Actions</th>
         </tr>
         {% for report in reports %}
         <tr>
             <td>{{ report.reportid }}</td>
             <td>{{ report.name }}</td>
+            <td>{{ report.vessel }}</td>
+            <td>{{ report.date }}</td>
             <td>
                 <a class="view" href="{{ url_for('viewreport', reportid=report.reportid) }}">View</a> |
                 {% if session.role == 'admin' %}
@@ -33,6 +45,33 @@
         </tr>
         {% endfor %}
     </table>
+
+    <script>
+        function filterReports() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const table = document.getElementById('reportsTable');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header
+                const nameCell = rows[i].getElementsByTagName('td')[1];
+                const vesselCell = rows[i].getElementsByTagName('td')[2];
+                
+                if (nameCell && vesselCell) {
+                    const nameText = nameCell.textContent || nameCell.innerText;
+                    const vesselText = vesselCell.textContent || vesselCell.innerText;
+
+                    if (
+                        nameText.toLowerCase().includes(searchInput) ||
+                        vesselText.toLowerCase().includes(searchInput)
+                    ) {
+                        rows[i].style.display = '';
+                    } else {
+                        rows[i].style.display = 'none';
+                    }
+                }
+            }
+        }
+    </script>
 
 </body>
 </html>
