@@ -16,10 +16,9 @@
         <h1>Approved Reports</h1>
     </div>
 
-    <!-- Search Form -->
+    <!-- Merged Search Form -->
     <div class="search-bar">
-        <input type="text" id="searchName" placeholder="Search by Name" onkeyup="filterReports()">
-        <input type="text" id="searchVessel" placeholder="Search by Vessel" onkeyup="filterReports()">
+        <input type="text" id="searchInput" placeholder="Search by Name or Vessel" onkeyup="filterReports()">
     </div>
 
     <table border="1" id="reportsTable">
@@ -49,21 +48,21 @@
 
     <script>
         function filterReports() {
-            const nameInput = document.getElementById('searchName').value.toLowerCase();
-            const vesselInput = document.getElementById('searchVessel').value.toLowerCase();
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
             const table = document.getElementById('reportsTable');
             const rows = table.getElementsByTagName('tr');
 
             for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header
                 const nameCell = rows[i].getElementsByTagName('td')[1];
                 const vesselCell = rows[i].getElementsByTagName('td')[2];
+                
                 if (nameCell && vesselCell) {
                     const nameText = nameCell.textContent || nameCell.innerText;
                     const vesselText = vesselCell.textContent || vesselCell.innerText;
 
                     if (
-                        nameText.toLowerCase().includes(nameInput) &&
-                        vesselText.toLowerCase().includes(vesselInput)
+                        nameText.toLowerCase().includes(searchInput) ||
+                        vesselText.toLowerCase().includes(searchInput)
                     ) {
                         rows[i].style.display = '';
                     } else {
