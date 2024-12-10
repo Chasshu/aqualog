@@ -4,55 +4,66 @@
     <meta charset="UTF-8">
     <title>Pending Reports</title>
     <link rel="stylesheet" href="{{url_for('static', filename='CSS/pending.css') }}">
-
     <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
-
     <link rel="stylesheet" href="../static/CSS/pending.css">
+    <style>
+        .search-bar {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .search-bar input {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
-
-
-
     <div class="top-bar">
         <h1>Pending Reports</h1>
     </div>
 
+    <!-- Added Search Input -->
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Search by Name or Vessel" onkeyup="filterReports()">
     </div>
 
-    <table>
-        <tr>
-            <th>Report ID</th>
-            <th>Name</th>
-            <th>Vessel Name</th>
-            <th>Date</th>
-            <th>Actions</th>
-        </tr>
-        {% for report in reports %}
-        <tr>
-            <td>{{ report.reportid }}</td>
-            <td>{{ report.name }}</td>
-            <td>{{ report.vessel }}</td>
-            <td>{{ report.date }}</td>
-            <td>
-                <a class="view" href="{{ url_for('viewreport', reportid=report.reportid) }}">View</a> |
-                {% if session.role == 'admin' %}
-                <a class="approve" href="{{ url_for('approvereport', reportid=report.reportid) }}">Approve</a> |
-                <a class="reject" href="{{ url_for('delete_report', reportid=report.reportid) }}">Reject</a>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
+    <table id="reportsTable">
+        <thead>
+            <tr>
+                <th>Report ID</th>
+                <th>Name</th>
+                <th>Vessel Name</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+            <tr>
+                <td>{{ report.reportid }}</td>
+                <td>{{ report.name }}</td>
+                <td>{{ report.vessel }}</td>
+                <td>{{ report.date }}</td>
+                <td>
+                    <a class="view" href="{{ url_for('viewreport', reportid=report.reportid) }}">View</a> |
+                    {% if session.role == 'admin' %}
+                    <a class="approve" href="{{ url_for('approvereport', reportid=report.reportid) }}">Approve</a> |
+                    <a class="reject" href="{{ url_for('delete_report', reportid=report.reportid) }}">Reject</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 
     <script>
         function filterReports() {
             const searchInput = document.getElementById('searchInput').value.toLowerCase();
             const table = document.getElementById('reportsTable');
-            const rows = table.getElementsByTagName('tr');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
-            for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header
+            for (let i = 0; i < rows.length; i++) {
                 const nameCell = rows[i].getElementsByTagName('td')[1];
                 const vesselCell = rows[i].getElementsByTagName('td')[2];
                 
@@ -72,6 +83,5 @@
             }
         }
     </script>
-
 </body>
 </html>
