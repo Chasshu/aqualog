@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Vessel List</title>
+    <title>User List</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='CSS/viewreports.css') }}">
     <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
     <style>
         .search-bar {
             margin-bottom: 20px;
-            margin-top: 20px;
             text-align: center;
         }
         .search-bar input {
@@ -20,54 +19,57 @@
 </head>
 <body>
     <div class="top-bar">
-        <h1>Vessel List</h1>
+        <h1>User List</h1>
     </div>
 
     <!-- Added Search Input -->
     <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search by Vessel Name or Registration Number" onkeyup="filterVessels()">
+        <input type="text" id="searchInput" placeholder="Search by Username, Vessel Name, or Registration Number" onkeyup="filterUsers()">
     </div>
-
-    <table border="1" id="vesselTable">
+    
+    <table border="1" id="userTable">
         <thead>
             <tr>
+                <th>Username</th>
+                <th>Password</th>
                 <th>Vessel Name</th>
                 <th>Registration Number</th>
-                <th>Classification</th>
-                <th>Gross Tonnage</th>
-                <th>Year Built</th>
+                <th>Contact Number</th>
             </tr>
         </thead>
         <tbody>
-            {% for vessel in vessels %}
+            {% for user in user %}
             <tr>
-                <td>{{ vessel.vessel_name }}</td>
-                <td>{{ vessel.registration_number }}</td>
-                <td>{{ vessel.classification }}</td>
-                <td>{{ vessel.gross_tonnage }}</td>
-                <td>{{ vessel.year_built }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.password }}</td>
+                <td>{{ user.vessel_name }}</td>
+                <td>{{ user.reg_number }}</td>
+                <td>{{ user.contact }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
     <script>
-        function filterVessels() {
+        function filterUsers() {
             const searchInput = document.getElementById('searchInput').value.toLowerCase();
-            const table = document.getElementById('vesselTable');
+            const table = document.getElementById('userTable');
             const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
             for (let i = 0; i < rows.length; i++) {
-                const vesselNameCell = rows[i].getElementsByTagName('td')[0];
-                const registrationNumberCell = rows[i].getElementsByTagName('td')[1];
+                const usernameCell = rows[i].getElementsByTagName('td')[0];
+                const vesselCell = rows[i].getElementsByTagName('td')[2];
+                const regNumberCell = rows[i].getElementsByTagName('td')[3];
                 
-                if (vesselNameCell && registrationNumberCell) {
-                    const vesselNameText = vesselNameCell.textContent || vesselNameCell.innerText;
-                    const registrationNumberText = registrationNumberCell.textContent || registrationNumberCell.innerText;
+                if (usernameCell && vesselCell && regNumberCell) {
+                    const usernameText = usernameCell.textContent || usernameCell.innerText;
+                    const vesselText = vesselCell.textContent || vesselCell.innerText;
+                    const regNumberText = regNumberCell.textContent || regNumberCell.innerText;
 
                     if (
-                        vesselNameText.toLowerCase().includes(searchInput) ||
-                        registrationNumberText.toLowerCase().includes(searchInput)
+                        usernameText.toLowerCase().includes(searchInput) ||
+                        vesselText.toLowerCase().includes(searchInput) ||
+                        regNumberText.toLowerCase().includes(searchInput)
                     ) {
                         rows[i].style.display = '';
                     } else {
