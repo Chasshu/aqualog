@@ -88,18 +88,12 @@
     }
 
     .search-bar {
-        margin: 20px auto; /* Adds vertical spacing and centers the element horizontally */
-        display: flex;
-        justify-content: center; /* Centers child elements horizontally */
-        gap: 10px; /* Adds spacing between input fields */
-        max-width: 600px; /* Optional: Set a max-width for better control */
+        margin-bottom: 20px;
+        margin-top: 20px;
+        text-align: center;
     }
-    
-    /* Ensure inputs are styled properly */
     .search-bar input {
+        width: 300px;
         padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        flex: 1; /* Makes inputs grow equally */
-        max-width: 280px; /* Optional: Limits the maximum width of each input */
+        font-size: 16px;
     }
