@@ -37,37 +37,54 @@
                 <option value="hipon">Hipon</option>
                 <option value="kabayas">Kabayas</option>
                 <option value="lapu-lapu">Lapu-Lapu</option>
-                <option value="lapu-lapu">Loba</option>
-                <option value="lapu-lapu">Lobster</option>
-                <option value="lapu-lapu">Lumahan</option>
-                <option value="lapu-lapu">Mamale</option>
-                <option value="lapu-lapu">Mayatoy</option>
-                <option value="lapu-lapu">Pahabela</option>
-                <option value="lapu-lapu">Salay-batang</option>
-                <option value="lapu-lapu">Salay-ginto</option>
-                <option value="lapu-lapu">Salay-salay</option>
-                <option value="lapu-lapu">Salengga</option>
-                <option value="lapu-lapu">Samaral</option>
-                <option value="lapu-lapu">Sapsap</option>
-                <option value="lapu-lapu">Sekoy</option>
-                <option value="lapu-lapu">Talakitok</option>
-                <option value="lapu-lapu">Tambol</option>
-                <option value="lapu-lapu">Tampal</option>
-                <option value="lapu-lapu">Tanigue</option>
-                <option value="lapu-lapu">Torsilyo</option>
-                <option value="lapu-lapu">Twakang</option>
+                <option value="loba">Loba</option>
+                <option value="lobster">Lobster</option>
+                <option value="lumahan">Lumahan</option>
+                <option value="mamale">Mamale</option>
+                <option value="mayatoy">Mayatoy</option>
+                <option value="pahabela">Pahabela</option>
+                <option value="salay batang">Salay batang</option>
+                <option value="salay ginto">Salay ginto</option>
+                <option value="salay salay">Salay salay</option>
+                <option value="salengga">Salengga</option>
+                <option value="samaral">Samaral</option>
+                <option value="sapsap">Sapsap</option>
+                <option value="sekoy">Sekoy</option>
+                <option value="talakitok">Talakitok</option>
+                <option value="tambol">Tambol</option>
+                <option value="tampal">Tampal</option>
+                <option value="tanigue">Tanigue</option>
+                <option value="torsilyo">Torsilyo</option>
+                <option value="twakang">Twakang</option>
 
-                <option value="yellowfintuna">Yellowfin Tuna</option>
+                <option value="yellowfin tuna">Yellowfin Tuna</option>
             </select>
         </div>
     </div>
     <div id="map" style="height: 500px;"></div>
     <script>
-        var map = L.map('map').setView([14.32, 120.768], 12);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
 
+var bounds = L.latLngBounds(
+    [13.2, 120.3], 
+    [15.0, 122.1] 
+);
+
+// Create the map
+var map = L.map('map', {
+    center: [13.8, 121.1], 
+    zoom: 9,            
+    minZoom: 8,        
+    maxZoom: 18,        
+    maxBounds: bounds,    
+    maxBoundsViscosity: 1.0 
+});
+
+// Add a tile layer
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors',
+}).addTo(map);
+
+map.fitBounds(bounds);
         var markersData = [
     {"lat": 14.397790, "lng": 120.584267, "name": "Corregidor", "species": "Alamang", "rank": 1},
     {"lat": 14.318295, "lng": 120.746833, "name": "Mabulo", "species": "Alimasag", "rank": 1},
