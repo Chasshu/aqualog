@@ -5,11 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report</title>
     <link rel="stylesheet" href="{{url_for('static', filename='CSS/Report.css') }}">
-
     <link rel="stylesheet" href="../static/CSS/Report.css">
-
     <link rel="icon" href="{{url_for('static', filename='Assets/DA Logo (no-text).svg') }}">
-    
 </head>
 <body>
     <div class="container">
@@ -41,370 +38,122 @@
             <label>Date</label>
             <input type="date" name="date" required>
 
-            <!-- Catch 1 -->
-            <label>Catch 1:</label>
+            {% for i in range(1, 6) %}
+            <!-- Catch {{ i }} -->
+            <label>Catch {{ i }}:</label>
             <label class="label-under">Species:</label>
-            <select name="catch1" required>
-                <option value="" disabled selected hidden>klase ng isda</option>
+            <input list="catch{{ i }}-list" name="catch{{ i }}" placeholder="klase ng isda" required>
+            <datalist id="catch{{ i }}-list">
                 {% for item in catch %}
-                    <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
+                    <option value="{{ item['name'] }}" data-id="{{ item['catchid'] }}">
                 {% endfor %}
-            </select>
+            </datalist>
 
             <!-- 2 columns -->
             <div class="two-col-container">
                 <div class="price">
                     <label class="label-inside">Price:</label>
-
-                    <input type="number" min="0" name="price1" placeholder="price per kilo" required>
+                    <input type="number" min="0" name="price{{ i }}" placeholder="price per kilo" required>
                 </div>
 
                 <div class="volume" >
                     <label class="label-inside">Volume:</label>
-                    <input  type="number" min="0" name="volume1" placeholder="timbang kada kilo (kg's)" required>
+                    <input type="number" min="0" name="volume{{ i }}" placeholder="timbang kada kilo (kg's)" required>
                 </div>
             </div>
 
             <div class="two-col-container">
                 <div class="site">
                     <label class="label-inside">Fishing Ground:</label>
-                    <select name="site1" required>
-                        <option value="" disabled selected hidden>lugar kung saan nahuli ang isda</option>
+                    <input list="site{{ i }}-list" name="site{{ i }}" placeholder="lugar kung saan nahuli ang isda" required>
+                    <datalist id="site{{ i }}-list">
                         {% for item in site %}
-                            <option value="{{ item['siteid'] }}">{{ item['name'] }}</option>
+                            <option value="{{ item['name'] }}" data-id="{{ item['siteid'] }}">
                         {% endfor %}
-                    </select>
+                    </datalist>
                 </div>
 
                 <div class="landing">
                     <label class="label-inside">Landing Site:</label>
-                    <select name="landing1" required>
-                        <option value="" disabled selected hidden>lugar na pinagbentahan</option>
+                    <input list="landing{{ i }}-list" name="landing{{ i }}" placeholder="lugar na pinagbentahan" required>
+                    <datalist id="landing{{ i }}-list">
                         {% for item in landing %}
-                            <option value="{{ item['landid'] }}">{{ item['name'] }}</option>
+                            <option value="{{ item['name'] }}" data-id="{{ item['landid'] }}">
                         {% endfor %}
-                    </select>
+                    </datalist>
                 </div>
             </div>
 
             <div class="two-col-container">
                 <div class="hours"> 
                     <label class="label-inside">Duration:</label>
-                    <input type="number" name="hours1" min="0" placeholder="oras" required>
+                    <input type="number" name="hours{{ i }}" min="0" placeholder="oras" required>
                 </div>
 
                 <div class="gear">
                     <label class="label-inside">Gear:</label>
-                    <select name="gear1" required>
-                        <option value="" disabled selected hidden>ginamit na pang-huli</option>
+                    <input list="gear{{ i }}-list" name="gear{{ i }}" placeholder="ginamit na pang-huli" required>
+                    <datalist id="gear{{ i }}-list">
                         {% for item in gear %}
-                            <option value="{{ item['gearid'] }}">{{ item['name'] }}</option>
+                            <option value="{{ item['name'] }}" data-id="{{ item['gearid'] }}">
                         {% endfor %}
-                    </select>
-                </div>
-            </div>            
-
-            <!-- Catch 2 -->
-            <label>Catch 2:</label>
-            <label class="label-under">Fish Species:</label>
-            <select name="catch2" required>
-                <option value="" disabled selected hidden>klase ng isda</option>
-                {% for item in catch %}
-                    <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
-                {% endfor %}
-            </select>
-
-            <div class="two-col-container">
-                <div class="price">
-                    <label class="label-inside">Price:</label>
-                    <input type="number" min="0" name="price2" placeholder="price per kilo" required>
-                </div>
-
-                <div class="volume" >
-                    <label class="label-inside">Volume:</label>
-                    <input  type="number" min="0" name="volume2" placeholder="timbang kada kilo (kg's)" required>
+                    </datalist>
                 </div>
             </div>
-
-            <div class="two-col-container">
-                <div class="site">
-                    <label class="label-inside">Fishing Ground:</label>
-                    <select name="site2" required>
-                        <option value="" disabled selected hidden>pinaghulihan ng isda</option>
-                        {% for item in site %}
-                            <option value="{{ item['siteid'] }}">{{ item['name'] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="landing">
-                    <label class="label-inside">Landing Site:</label>
-                    <select name="landing2" required>
-                        <option value="" disabled selected hidden>lugar na pinagbentahan</option>
-                        {% for item in landing %}
-                            <option value="{{ item['landid'] }}">{{ item['name'] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            <div class="two-col-container">
-                <div class="hours"> 
-                    <label class="label-inside">Duration:</label>
-                    <input type="number" name="hours2" min="0" placeholder="oras" required>
-                </div>
-
-                <div class="gear">
-                    <label class="label-inside">Gear:</label>
-                    <select name="gear2" required>
-                        <option value="" disabled selected hidden>ginamit na pang-huli</option>
-                        {% for item in gear %}
-                            <option value="{{ item['gearid'] }}">{{ item['name'] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>   
-            
-
-            <!-- Catch 3 -->
-            <label>Catch 3:</label>
-            <label class="label-under">Species:</label>
-            <select name="catch3" required>
-                <option value="" disabled selected hidden>klase ng isda</option>
-                {% for item in catch %}
-                    <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
-                {% endfor %}
-            </select>
-
-            <div class="two-col-container">
-                <div class="price">
-                    <label class="label-inside">Price:</label>
-
-                    <input type="number" min="0" name="price3" placeholder="price per kilo" required>
-                </div>
-
-                <div class="volume" >
-                    <label class="label-inside">Volume:</label>
-                    <input  type="number" min="0" name="volume3" placeholder="timbang kada kilo (kg's)" required>
-                </div>
-            </div>
-
-            <div class="two-col-container">
-                <div class="site">
-                    <label class="label-inside">Fishing Ground:</label>
-                    <select name="site3" required>
-                        <option value="" disabled selected hidden>pinaghulihan ng isda</option>
-                        {% for item in site %}
-                            <option value="{{ item['siteid'] }}">{{ item['name'] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="landing">
-                    <label class="label-inside">Landing Site:</label>
-                    <select name="landing3" required>
-                        <option value="" disabled selected hidden>lugar na pinagbentahan</option>
-                        {% for item in landing %}
-                            <option value="{{ item['landid'] }}">{{ item['name'] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            <div class="two-col-container">
-                <div class="hours"> 
-                    <label class="label-inside">Duration:</label>
-                    <input type="number" name="hours3" min="0" placeholder="oras" required>
-                </div>
-
-                <div class="gear">
-                    <label class="label-inside">Gear:</label>
-                    <select name="gear3" required>
-                        <option value="" disabled selected hidden>ginamit na pang-huli</option>
-                        {% for item in gear %}
-                            <option value="{{ item['gearid'] }}">{{ item['name'] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>   
-            
-            <!-- Catch 4 -->
-            <label>Catch 4:</label>
-            <label class="label-under">Species:</label>
-            <select name="catch4" required>
-                <option value="" disabled selected hidden>klase ng isda</option>
-                {% for item in catch %}
-                    <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
-                {% endfor %}
-            </select>
-
-            <div class="two-col-container">
-                <div class="price">
-                    <label class="label-inside">Price:</label>
-
-                    <input type="number" min="0" name="price4" placeholder="price per kilo" required>
-                </div>
-
-                <div class="volume" >
-                    <label class="label-inside">Volume:</label>
-                    <input  type="number" min="0" name="volume4" placeholder="timbang kada kilo (kg's)" required>
-                </div>
-            </div>
-
-            <div class="two-col-container">
-                <div class="site">
-                    <label class="label-inside">Fishing Ground:</label>
-                    <select name="site4" required>
-                        <option value="" disabled selected hidden>pinaghulihan ng isda</option>
-                        {% for item in site %}
-                            <option value="{{ item['siteid'] }}">{{ item['name'] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="landing">
-                    <label class="label-inside">Landing Site:</label>
-                    <select name="landing4" required>
-                        <option value="" disabled selected hidden>lugar na pinagbentahan</option>
-                        {% for item in landing %}
-                            <option value="{{ item['landid'] }}">{{ item['name'] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            <div class="two-col-container">
-                <div class="hours"> 
-                    <label class="label-inside">Duration:</label>
-                    <input type="number" name="hours4" min="0" placeholder="oras" required>
-                </div>
-
-                <div class="gear">
-                    <label class="label-inside">Gear:</label>
-                    <select name="gear4" required>
-                        <option value="" disabled selected hidden>ginamit na pang-huli</option>
-                        {% for item in gear %}
-                            <option value="{{ item['gearid'] }}">{{ item['name'] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>   
-
-            <!-- Catch 5 -->
-            <label>Catch 5:</label>
-            <label class="label-under">Species:</label>
-            <select name="catch5" required>
-                <option value="" disabled selected hidden>klase ng isda</option>
-                {% for item in catch %}
-                    <option value="{{ item['catchid'] }}">{{ item['name'] }}</option>
-                {% endfor %}
-            </select>
-            <div class="two-col-container">
-                <div class="price">
-                    <label class="label-inside">Price:</label>
-
-                    <input type="number" min="0" name="price5" placeholder="price per kilo" required>
-                </div>
-
-                <div class="volume" >
-                    <label class="label-inside">Volume:</label>
-                    <input  type="number" min="0" name="volume5" placeholder="timbang kada kilo (kg's)" required>
-                </div>
-            </div>
-
-            <div class="two-col-container">
-                <div class="site">
-                    <label class="label-inside">Fishing Ground:</label>
-                    <select name="site5" required>
-                        <option value="" disabled selected hidden>pinaghulihan ng isda</option>
-                        {% for item in site %}
-                            <option value="{{ item['siteid'] }}">{{ item['name'] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="landing">
-                    <label class="label-inside">Landing Site:</label>
-                    <select name="landing5" required>
-                        <option value="" disabled selected hidden>lugar na pinagbentahan</option>
-                        {% for item in landing %}
-                            <option value="{{ item['landid'] }}">{{ item['name'] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            <div class="two-col-container">
-                <div class="hours"> 
-                    <label class="label-inside">Duration:</label>
-                    <input type="number" name="hours5" min="0" placeholder="oras" required>
-                </div>
-
-                <div class="gear">
-                    <label class="label-inside">Gear:</label>
-                    <select name="gear5" required>
-                        <option value="" disabled selected hidden>ginamit na pang-huli</option>
-                        {% for item in gear %}
-                            <option value="{{ item['gearid'] }}">{{ item['name'] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>   
+            {% endfor %}
 
             <!-- submit button -->
-            <button  class="proceed" type="button" id="submitButton">Proceed</button>
+            <button class="proceed" type="button" id="submitButton">Proceed</button>
             <p id="error-message"></p>
         </form>
 
-    <!-- Modal -->
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <img class="modal-icon" src="{{ url_for('static', filename='Assets/modal.svg') }}">
-            </div>
-            <div class="modal-body">
-                <h3>Your report is submitted!</h3>
-                <p>Please wait for approval.</p>
-            </div>
-            <div class="modal-footer">
-                <button id="closeButton" class="ok-button">OK</button>
+        <!-- Modal - Unchanged -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <img class="modal-icon" src="{{ url_for('static', filename='Assets/modal.svg') }}">
+                </div>
+                <div class="modal-body">
+                    <h3>Your report is submitted!</h3>
+                    <p>Please wait for approval.</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="closeButton" class="ok-button">OK</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        document.getElementById('submitButton').addEventListener('click', function (e) {
-            e.preventDefault();
-            const form = document.getElementById('reportForm');
-            const requiredFields = form.querySelectorAll('input[required], select[required]');
-            let allFieldsValid = true;
+        <script>
+            document.getElementById('submitButton').addEventListener('click', function (e) {
+                e.preventDefault();
+                const form = document.getElementById('reportForm');
+                const requiredFields = form.querySelectorAll('input[required]');
+                let allFieldsValid = true;
 
-            requiredFields.forEach(field => {
-                if (!field.value.trim()) {
-                    allFieldsValid = false;
-                    field.style.border = '2px solid red';
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        allFieldsValid = false;
+                        field.style.border = '2px solid red';
+                    } else {
+                        field.style.border = '';
+                    }
+                });
+
+                const errorMessage = document.getElementById('error-message');
+                if (allFieldsValid) {
+                    errorMessage.style.display = 'none';
+                    document.getElementById('modal').style.display = 'flex';
                 } else {
-                    field.style.border = '';
+                    errorMessage.textContent = 'Please fill up all fields first before submitting.';
+                    errorMessage.style.display = 'block';
                 }
             });
 
-            const errorMessage = document.getElementById('error-message');
-            if (allFieldsValid) {
-                errorMessage.style.display = 'none';
-                document.getElementById('modal').style.display = 'flex';
-            } else {
-                errorMessage.textContent = 'Please fill up all fields first before submitting.';
-                errorMessage.style.display = 'block';
-            }
-        });
-
-        document.getElementById('closeButton').addEventListener('click', function () {
-            const form = document.getElementById('reportForm');
-            document.getElementById('modal').style.display = 'none';
-            form.submit();
-            
-        });
-        
-    </script>
-</body>
+            document.getElementById('closeButton').addEventListener('click', function () {
+                const form = document.getElementById('reportForm');
+                document.getElementById('modal').style.display = 'none';
+                form.submit();
+            });
+        </script>
+    </body>
 </html>

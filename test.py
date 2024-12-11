@@ -583,27 +583,65 @@ def admin_register():
 # User report submission
 @app.route('/report', methods=['GET', 'POST'])
 def report():
-    if 'id' not in session:  # Ensure the user is logged in
+    if 'id' not in session:
         flash("You need to be logged in to submit a report.", "error")
-        return redirect(url_for('login'))  # Redirect to login if not logged in
+        return redirect(url_for('login'))
     
-    userid = session['id']  # Retrieve user ID from session
+    userid = session['id']
 
     try:
         db = connect_db()
         cursor = db.cursor(pymysql.cursors.DictCursor)
 
         # Fetching dropdown data
-        cursor.execute("SELECT catchid, name FROM catch")  # Fetch catch data
+        cursor.execute("SELECT catchid, name FROM catch")
         catch = cursor.fetchall()
-        cursor.execute("SELECT gearid, name FROM gear")  # Fetch gear data
+        cursor.execute("SELECT gearid, name FROM gear")
         gear = cursor.fetchall()
-        cursor.execute("SELECT landid, name FROM landing")  # Fetch landing data
+        cursor.execute("SELECT landid, name FROM landing")
         landing = cursor.fetchall()
-        cursor.execute("SELECT siteid, name FROM site")  # Fetch site data
+        cursor.execute("SELECT siteid, name FROM site")
         site = cursor.fetchall()
 
         if request.method == 'POST':
+            # Function to handle adding new items to respective tables
+            def add_if_not_exists(cursor, table, column, value):
+                if not value:
+                    return None
+                
+                # Check if the value already exists
+                cursor.execute(f"SELECT {column}id FROM {table} WHERE name = %s", (value,))
+                existing = cursor.fetchone()
+                
+                if existing:
+                    return existing[f'{column}id']
+                
+                # If not exists, insert new item
+                cursor.execute(f"INSERT INTO {table} (name) VALUES (%s)", (value,))
+                return cursor.lastrowid
+
+            # Add new items for catches, sites, landings, and gears
+            new_catches = [
+                add_if_not_exists(cursor, 'catch', 'catch', request.form.get(f"catch{i}")) 
+                for i in range(1, 6)
+            ]
+
+            new_sites = [
+                add_if_not_exists(cursor, 'site', 'site', request.form.get(f"site{i}")) 
+                for i in range(1, 6)
+            ]
+
+            new_landings = [
+                add_if_not_exists(cursor, 'landing', 'land', request.form.get(f"landing{i}")) 
+                for i in range(1, 6)
+            ]
+
+            new_gears = [
+                add_if_not_exists(cursor, 'gear', 'gear', request.form.get(f"gear{i}")) 
+                for i in range(1, 6)
+            ]
+
+            # Rest of the code remains the same as in the previous implementation
             sql = """INSERT INTO report_temp (
                         userid, name, vessel, frequent, date, 
                         catch1, catch2, catch3, catch4, catch5, 
@@ -621,21 +659,16 @@ def report():
                 userid,
                 request.form.get("name"), request.form.get("vessel"),
                 request.form.get("frequent"), request.form.get("date"),
-                request.form.get("catch1"), request.form.get("catch2"),
-                request.form.get("catch3"), request.form.get("catch4"),
-                request.form.get("catch5"), request.form.get("volume1"),
-                request.form.get("volume2"), request.form.get("volume3"),
-                request.form.get("volume4"), request.form.get("volume5"),
-                request.form.get("site1"), request.form.get("site2"),
-                request.form.get("site3"), request.form.get("site4"),
-                request.form.get("site5"), request.form.get("gear1"),
-                request.form.get("gear2"), request.form.get("gear3"),
-                request.form.get("gear4"), request.form.get("gear5"),
+                *new_catches, 
+                request.form.get("volume1"), request.form.get("volume2"),
+                request.form.get("volume3"), request.form.get("volume4"),
+                request.form.get("volume5"), 
+                *new_sites,
+                *new_gears,
                 request.form.get("hours1"), request.form.get("hours2"),
                 request.form.get("hours3"), request.form.get("hours4"),
-                request.form.get("hours5"), request.form.get("landing1"),
-                request.form.get("landing2"), request.form.get("landing3"),
-                request.form.get("landing4"), request.form.get("landing5"),
+                request.form.get("hours5"), 
+                *new_landings,
                 request.form.get("price1"), request.form.get("price2"),
                 request.form.get("price3"), request.form.get("price4"),
                 request.form.get("price5"),
