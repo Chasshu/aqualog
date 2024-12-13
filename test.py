@@ -6,6 +6,7 @@ import pymysql
 import csv
 from fpdf import FPDF
 import os
+import calendar
 from flask import Flask, render_template, request, redirect, session, flash, url_for, Response, send_file
 
 app = Flask(__name__)
@@ -898,7 +899,7 @@ def visualization_page():
                 plt.title('Overview: Monthly Catch Frequency')
                 plt.xlabel('Month')
                 plt.ylabel('Frequency')
-                plt.xticks(range(1, 13))
+                plt.xticks(range(1, 13), [calendar.month_name[i] for i in range(1, 13)])
                 plt.legend(title='Species', bbox_to_anchor=(1.05, 1), loc='upper left')
                 plt.grid(True)
                 plt.tight_layout()
@@ -969,7 +970,7 @@ def visualization_page():
                     plt.title(f'{selected_species_name} - Monthly Catch Volume ({selected_year})')
                     plt.xlabel('Month')
                     plt.ylabel('Volume')
-                    plt.xticks(range(1, 13))
+                    plt.xticks(range(1, 13), [calendar.month_name[i] for i in range(1, 13)])
                     plt.legend(loc='upper right')
                     plt.grid(True)
                     plt.tight_layout()
@@ -1031,7 +1032,7 @@ def visualization_page():
                     plt.title(f'{selected_species_name} - Monthly Catch Frequency ({selected_year})')
                     plt.xlabel('Month')
                     plt.ylabel('Frequency')
-                    plt.xticks(range(1, 13))
+                    plt.xticks(range(1, 13), [calendar.month_name[i] for i in range(1, 13)])
                     plt.legend(loc='upper right')
                     plt.grid(True)
                     plt.tight_layout()
