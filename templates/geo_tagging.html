@@ -12,8 +12,10 @@
     <div class="top-bar">
         <h1>Geo-Tagging</h1>
     </div>
-    <div class="container">
-        <div class="dropdown">
+    
+    <!-- Dropdown containers -->
+    <div id="dropdown-wrapper">
+        <div id="species-dropdown-container" class="dropdown-container">
             <label for="map-select">Choose Species</label>
             <select name="map-select" id="map-select" required>
                 <option value="" disabled selected hidden>Select Species</option>
@@ -23,7 +25,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="dropdown">
+        <div id="month-dropdown-container" class="dropdown-container">
             <label for="month-select">Choose Month</label>
             <select name="month-select" id="month-select" required>
                 <option value="" disabled selected hidden>Select Month</option>
@@ -34,7 +36,12 @@
             </select>
         </div>
     </div>
-    <div id="map" style="height: 500px;"></div>
+
+    <!-- Map container -->
+    <div id="map-container">
+        <div id="map" style="height: 500px;"></div>
+    </div>
+
     <script>
         var markersData = [
             {% for row in query_results %}
@@ -73,7 +80,6 @@
 
         var allMarkers = [];
 
-        // Function to get the marker color based on rank
         function getMarkerColor(rank) {
             if (rank === "1.0") return "red";
             if (rank === "2.0") return "blue";
@@ -81,15 +87,12 @@
             return "gray";
         }
 
-        // Function to add markers to the map based on selected species and month
         function addMarkers(species, month) {
-            // Clear existing markers
             allMarkers.forEach(function(marker) {
                 map.removeLayer(marker);
             });
             allMarkers = [];
 
-            // Loop through marker data to add relevant markers
             markersData.forEach(function(markerData) {
                 if ((species === "overview" || markerData.species.toLowerCase() === species.toLowerCase()) &&
                     (month === "all" || markerData.month === month)) {
@@ -108,7 +111,6 @@
             });
         }
 
-        // Event listener for dropdown changes
         document.getElementById("map-select").addEventListener("change", function() {
             var selectedSpecies = this.value;
             var selectedMonth = document.getElementById("month-select").value || "all";
@@ -121,10 +123,8 @@
             addMarkers(selectedSpecies, selectedMonth);
         });
 
-        // Initially load the map with "overview" markers for all months
         addMarkers("overview", "all");
 
-        // Add a legend to the map for the colors
         var legend = L.control({ position: 'bottomright' });
         legend.onAdd = function() {
             var div = L.DomUtil.create('div', 'legend');
