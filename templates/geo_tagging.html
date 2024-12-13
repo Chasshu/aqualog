@@ -23,6 +23,16 @@
                 {% endfor %}
             </select>
         </div>
+        <div class="dropdown">
+            <label for="month-select">Choose Month</label>
+            <select name="month-select" id="month-select" required>
+                <option value="" disabled selected hidden>Select Month</option>
+                <option value="all">All Months</option>
+                {% for row in query_results | unique(attribute='report_month') %}
+                    <option value="{{ row['report_month'] }}">{{ row['report_month'] }}</option>
+                {% endfor %}
+            </select>
+        </div>
     </div>
     <div id="map" style="height: 500px;"></div>
     <script>
@@ -33,6 +43,7 @@
                 "lng": {{ row['longitude'] }},
                 "name": "{{ row['site_name'] }}",
                 "species": "{{ row['species_name'] }}",
+                "month": "{{ row['report_month'] }}",
                 "rank": "{{ row['rank'] }}"
             }{% if not loop.last %},{% endif %}
             {% endfor %}
@@ -70,8 +81,8 @@
             return "gray";
         }
 
-        // Function to add markers to the map based on selected species
-        function addMarkers(species) {
+        // Function to add markers to the map based on selected species and month
+        function addMarkers(species, month) {
             // Clear existing markers
             allMarkers.forEach(function(marker) {
                 map.removeLayer(marker);
@@ -80,14 +91,16 @@
 
             // Loop through marker data to add relevant markers
             markersData.forEach(function(markerData) {
-                if (species === "overview" || markerData.species.toLowerCase() === species.toLowerCase()) {
+                if ((species === "overview" || markerData.species.toLowerCase() === species.toLowerCase()) &&
+                    (month === "all" || markerData.month === month)) {
+
                     var markerColor = species === "overview" ? "gray" : getMarkerColor(markerData.rank);
 
                     var marker = L.circleMarker([markerData.lat, markerData.lng], {
                         color: markerColor,
                         radius: 8,
                         fillOpacity: 0.8
-                    }).bindPopup(`<strong>${markerData.name}</strong><br>Species: ${markerData.species}<br>Rank: ${markerData.rank}`);
+                    }).bindPopup(`<strong>${markerData.name}</strong><br>Species: ${markerData.species}<br>Month: ${markerData.month}<br>Rank: ${markerData.rank}`);
 
                     marker.addTo(map);
                     allMarkers.push(marker);
@@ -95,14 +108,21 @@
             });
         }
 
-        // Event listener for dropdown change
+        // Event listener for dropdown changes
         document.getElementById("map-select").addEventListener("change", function() {
             var selectedSpecies = this.value;
-            addMarkers(selectedSpecies);
+            var selectedMonth = document.getElementById("month-select").value || "all";
+            addMarkers(selectedSpecies, selectedMonth);
         });
 
-        // Initially load the map with "overview" markers
-        addMarkers("overview");
+        document.getElementById("month-select").addEventListener("change", function() {
+            var selectedMonth = this.value;
+            var selectedSpecies = document.getElementById("map-select").value || "overview";
+            addMarkers(selectedSpecies, selectedMonth);
+        });
+
+        // Initially load the map with "overview" markers for all months
+        addMarkers("overview", "all");
 
         // Add a legend to the map for the colors
         var legend = L.control({ position: 'bottomright' });

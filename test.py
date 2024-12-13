@@ -1062,7 +1062,8 @@ def visualization_page():
 def geo_tagging():
     db = connect_db()
     cursor = db.cursor(pymysql.cursors.DictCursor)
-    # Execute your SQL query and fetch results
+    
+    # Execute SQL query with month sorting
     sql_query = """
 SELECT 
     RankedSites.species_name,
@@ -1070,7 +1071,9 @@ SELECT
     RankedSites.site_name,
     RankedSites.latitude,
     RankedSites.longitude,
-    RankedSites.rank
+    RankedSites.report_month,
+    RankedSites.rank,
+    RankedSites.total_volume
 FROM (
     SELECT 
         st.name AS site_name, -- Site name
@@ -1078,6 +1081,11 @@ FROM (
         st.lng AS longitude, -- Longitude from site table
         s.name AS species_name, -- Species name
         s.catchid, -- Species ID
+        DATE_FORMAT(r.date, '%M %Y') AS report_month, -- Extract full Month-Name Year
+        DATE_FORMAT(r.date, '%Y-%m') AS sort_month, -- Format for sorting: YYYY-MM
+        @rank := IF(@prev_species = s.catchid AND @prev_month = DATE_FORMAT(r.date, '%Y-%m'), @rank + 1, 1) AS rank, -- Rank calculation
+        @prev_species := s.catchid, -- Update species for rank grouping
+        @prev_month := DATE_FORMAT(r.date, '%Y-%m'), -- Update month for rank grouping
         SUM(CASE WHEN r.catch1 = s.catchid THEN r.volume1 ELSE 0 END) +
         SUM(CASE WHEN r.catch2 = s.catchid THEN r.volume2 ELSE 0 END) +
         SUM(CASE WHEN r.catch3 = s.catchid THEN r.volume3 ELSE 0 END) +
@@ -1086,48 +1094,15 @@ FROM (
     FROM report r
     JOIN catch s ON s.catchid IN (r.catch1, r.catch2, r.catch3, r.catch4, r.catch5)
     JOIN site st ON st.siteid IN (r.site1, r.site2, r.site3, r.site4, r.site5) -- Join for multiple sites
+    CROSS JOIN (SELECT @rank := 0, @prev_species := NULL, @prev_month := NULL) vars -- Initialize variables for ranking
     WHERE s.catchid BETWEEN 2 AND 42 -- Filter for species IDs in the range 2 to 42
-      AND st.siteid != 0 -- Exclude siteid 0
-    GROUP BY st.name, st.lat, st.lng, s.name, s.catchid
+    GROUP BY st.name, st.lat, st.lng, s.name, s.catchid, DATE_FORMAT(r.date, '%M %Y') -- Group by site, species, and month
     HAVING total_volume > 0 -- Exclude zero volume
-) AS SiteVolume
-JOIN (
-    SELECT 
-        RankedData.site_name,
-        RankedData.latitude,
-        RankedData.longitude,
-        RankedData.species_name,
-        RankedData.catchid,
-        @rank := IF(@prev_catchid = RankedData.catchid, @rank + 1, 1) AS rank,
-        @prev_catchid := RankedData.catchid
-    FROM (
-        SELECT 
-            st.name AS site_name,
-            st.lat AS latitude,
-            st.lng AS longitude,
-            s.name AS species_name,
-            s.catchid,
-            SUM(CASE WHEN r.catch1 = s.catchid THEN r.volume1 ELSE 0 END) +
-            SUM(CASE WHEN r.catch2 = s.catchid THEN r.volume2 ELSE 0 END) +
-            SUM(CASE WHEN r.catch3 = s.catchid THEN r.volume3 ELSE 0 END) +
-            SUM(CASE WHEN r.catch4 = s.catchid THEN r.volume4 ELSE 0 END) +
-            SUM(CASE WHEN r.catch5 = s.catchid THEN r.volume5 ELSE 0 END) AS total_volume
-        FROM report r
-        JOIN catch s ON s.catchid IN (r.catch1, r.catch2, r.catch3, r.catch4, r.catch5)
-        JOIN site st ON st.siteid IN (r.site1, r.site2, r.site3, r.site4, r.site5)
-        WHERE s.catchid BETWEEN 2 AND 42
-          AND st.siteid != 0 -- Exclude siteid 0
-        GROUP BY st.name, st.lat, st.lng, s.name, s.catchid
-        HAVING total_volume > 0
-        ORDER BY s.catchid, total_volume DESC
-    ) AS RankedData,
-    (SELECT @rank := 0, @prev_catchid := NULL) AS vars
-) AS RankedSites ON SiteVolume.catchid = RankedSites.catchid
-WHERE RankedSites.rank <= 3 -- Top 3 sites per species
-  AND RankedSites.catchid != 1 -- Exclude catchid 1
-ORDER BY RankedSites.catchid, RankedSites.rank;
-
+    ORDER BY s.catchid, sort_month, total_volume DESC
+) AS RankedSites
+ORDER BY RankedSites.catchid, RankedSites.sort_month, RankedSites.rank;
     """
+    
     cursor.execute(sql_query)
     query_results = cursor.fetchall()  # Fetch as a list of dictionaries
     return render_template('geo_tagging.html', query_results=query_results)
