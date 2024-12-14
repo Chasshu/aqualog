@@ -17,25 +17,31 @@
         <!-- Form Container -->
         <div class="form-container">
             <form method="POST" action="{{ url_for('visualization_page') }}">
-                <!-- Dropdown for Volume -->
-                <label for="species">Select a species (Volume): </label>
+                <!-- Dropdown for Species (Volume / Frequency) -->
+                <label for="species">Select a species (Volume / Frequency): </label>
                 <select id="species" name="species">
+                    <!-- Add 'Overview' as the first option -->
+                    <option value="overview" {% if request.form.get('species') == 'overview' %}selected{% endif %}>Overview</option>
                     {% for species in species_list %}
-                        <option value="{{ species['catchid'] }}">{{ species['name'] }}</option>
+                        <option value="{{ species['catchid'] }}" {% if species['catchid'] == request.form.get('species') %}selected{% endif %}>
+                            {{ species['name'] }}
+                        </option>
                     {% endfor %}
                 </select>
 
+                <!-- Year Dropdown -->
                 <label for="year">Select a year:</label>
                 <select id="year" name="year">
                     {% for year in range(2022, 2025) %}
-                        <option value="{{ year }}">{{ year }}</option>
+                        <option value="{{ year }}" {% if request.form.get('year') == year %}selected{% endif %}>{{ year }}</option>
                     {% endfor %}
                 </select>
 
+                <!-- Graph Type Dropdown -->
                 <label for="graph_type">Select graph type:</label>
                 <select id="graph_type" name="graph_type">
-                    <option value="volume">Volume</option>
-                    <option value="frequency">Frequency</option>
+                    <option value="volume" {% if request.form.get('graph_type') == 'volume' %}selected{% endif %}>Volume</option>
+                    <option value="frequency" {% if request.form.get('graph_type') == 'frequency' %}selected{% endif %}>Frequency</option>
                 </select>
 
                 <button type="submit">Generate Graph</button>
