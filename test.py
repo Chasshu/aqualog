@@ -638,7 +638,7 @@ def admin_dashboard():
             years = [2020, 2021, 2022, 2023, 2024, 2025]
 
             # Query for yearly ranking
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT 
                     CASE 
                         WHEN r.`catch1` BETWEEN 2 AND 42 THEN c1.name
@@ -670,7 +670,7 @@ def admin_dashboard():
             """, (selected_year,))
             species_ranking = cursor.fetchall()
 
-            # Query for monthly species ranking
+            # Query for monthly species ranking with year filter
             cursor.execute("""
                 SELECT 
                     main.period,
@@ -708,6 +708,7 @@ def admin_dashboard():
                          r.catch3 BETWEEN 2 AND 42 OR 
                          r.catch4 BETWEEN 2 AND 42 OR 
                          r.catch5 BETWEEN 2 AND 42)
+                        AND YEAR(r.date) = %s
                     GROUP BY period, species_name
                 ) AS main
                 WHERE main.total_volume = (
@@ -744,12 +745,13 @@ def admin_dashboard():
                              r2.catch3 BETWEEN 2 AND 42 OR 
                              r2.catch4 BETWEEN 2 AND 42 OR 
                              r2.catch5 BETWEEN 2 AND 42)
+                        AND YEAR(r2.date) = %s
                         GROUP BY period, species_name
                     ) AS sub
                     WHERE sub.period = main.period
                 )
                 ORDER BY main.period;
-            """)
+            """, (selected_year, selected_year))
             species_rankings = cursor.fetchall()
 
             cursor.close()
