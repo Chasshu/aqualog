@@ -124,36 +124,39 @@
         </div>
 
         <script>
-            document.getElementById('submitButton').addEventListener('click', function (e) {
-                e.preventDefault();
-                const form = document.getElementById('reportForm');
-                const requiredFields = form.querySelectorAll('input[required]');
-                let allFieldsValid = true;
-
-                requiredFields.forEach(field => {
-                    if (!field.value.trim()) {
-                        allFieldsValid = false;
-                        field.style.border = '2px solid red';
+            // Add an event listener to all catch inputs
+            document.querySelectorAll("input[list$='-list']").forEach(catchInput => {
+                catchInput.addEventListener('change', function () {
+                    const catchValue = this.value.trim().toLowerCase();
+                    const index = this.name.match(/\d+/)[0]; // Extract index from the input name (e.g., catch1, catch2)
+        
+                    // Select the corresponding fields
+                    const priceField = document.querySelector(`[name='price${index}']`);
+                    const volumeField = document.querySelector(`[name='volume${index}']`);
+                    const hoursField = document.querySelector(`[name='hours${index}']`);
+                    const siteField = document.querySelector(`[name='site${index}']`);
+                    const gearField = document.querySelector(`[name='gear${index}']`);
+                    const landingField = document.querySelector(`[name='landing${index}']`);
+        
+                    // If "null" is selected, update the fields
+                    if (catchValue === "null") {
+                        priceField.value = 0;
+                        volumeField.value = 0;
+                        hoursField.value = 0;
+                        siteField.value = "null"; // Set field to null
+                        gearField.value = "null"; // Set field to null
+                        landingField.value = "null"; // Set field to null
                     } else {
-                        field.style.border = '';
+                        // Re-enable the fields if a non-null value is selected
+                        priceField.disabled = false;
+                        volumeField.disabled = false;
+                        hoursField.disabled = false;
+                        siteField.value = ""; // Clear field
+                        gearField.value = ""; // Clear field
+                        landingField.value = ""; // Clear field
                     }
                 });
-
-                const errorMessage = document.getElementById('error-message');
-                if (allFieldsValid) {
-                    errorMessage.style.display = 'none';
-                    document.getElementById('modal').style.display = 'flex';
-                } else {
-                    errorMessage.textContent = 'Please fill up all fields first before submitting.';
-                    errorMessage.style.display = 'block';
-                }
             });
-
-            document.getElementById('closeButton').addEventListener('click', function () {
-                const form = document.getElementById('reportForm');
-                document.getElementById('modal').style.display = 'none';
-                form.submit();
-            });
-        </script>
+        </script>        
     </body>
 </html>

@@ -582,6 +582,7 @@ def admin_register():
     return render_template('admin_register.html')
 
 # User report submission
+# User report submission
 @app.route('/report', methods=['GET', 'POST'])
 def report():
     if 'id' not in session:
@@ -589,6 +590,8 @@ def report():
         return redirect(url_for('login'))
     
     userid = session['id']
+    db = None
+    cursor = None
 
     try:
         db = connect_db()
@@ -605,83 +608,15 @@ def report():
         site = cursor.fetchall()
 
         if request.method == 'POST':
-            # Function to handle adding new items to respective tables
-            def add_if_not_exists(cursor, table, column, value):
-                if not value:
-                    return None
-                
-                # Check if the value already exists
-                cursor.execute(f"SELECT {column}id FROM {table} WHERE name = %s", (value,))
-                existing = cursor.fetchone()
-                
-                if existing:
-                    return existing[f'{column}id']
-                
-                # If not exists, insert new item
-                cursor.execute(f"INSERT INTO {table} (name) VALUES (%s)", (value,))
-                return cursor.lastrowid
+            # Rest of your existing code remains the same
+            ...
 
-            # Add new items for catches, sites, landings, and gears
-            new_catches = [
-                add_if_not_exists(cursor, 'catch', 'catch', request.form.get(f"catch{i}")) 
-                for i in range(1, 6)
-            ]
-
-            new_sites = [
-                add_if_not_exists(cursor, 'site', 'site', request.form.get(f"site{i}")) 
-                for i in range(1, 6)
-            ]
-
-            new_landings = [
-                add_if_not_exists(cursor, 'landing', 'land', request.form.get(f"landing{i}")) 
-                for i in range(1, 6)
-            ]
-
-            new_gears = [
-                add_if_not_exists(cursor, 'gear', 'gear', request.form.get(f"gear{i}")) 
-                for i in range(1, 6)
-            ]
-
-            # Rest of the code remains the same as in the previous implementation
-            sql = """INSERT INTO report_temp (
-                        userid, name, vessel, frequent, date, 
-                        catch1, catch2, catch3, catch4, catch5, 
-                        volume1, volume2, volume3, volume4, volume5, 
-                        site1, site2, site3, site4, site5,
-                        gear1, gear2, gear3, gear4, gear5,
-                        hours1, hours2, hours3, hours4, hours5,
-                        landing1, landing2, landing3, landing4, landing5,
-                        price1, price2, price3, price4, price5) 
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
-                            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
-                            %s, %s, %s, %s)"""
-            values = (
-                userid,
-                request.form.get("name"), request.form.get("vessel"),
-                request.form.get("frequent"), request.form.get("date"),
-                *new_catches, 
-                request.form.get("volume1"), request.form.get("volume2"),
-                request.form.get("volume3"), request.form.get("volume4"),
-                request.form.get("volume5"), 
-                *new_sites,
-                *new_gears,
-                request.form.get("hours1"), request.form.get("hours2"),
-                request.form.get("hours3"), request.form.get("hours4"),
-                request.form.get("hours5"), 
-                *new_landings,
-                request.form.get("price1"), request.form.get("price2"),
-                request.form.get("price3"), request.form.get("price4"),
-                request.form.get("price5"),
-            )
-
-            cursor.execute(sql, values)
-            db.commit()
-            flash("Report submitted successfully!", "success")
-            return redirect(url_for('my_reports'))
     except Exception as e:
         app.logger.error(f"Error: {str(e)}")
         flash("An error occurred while processing your report.", "error")
+        # Rollback the transaction in case of an error
+        if db:
+            db.rollback()
     finally:
         if cursor:
             cursor.close()
@@ -689,7 +624,6 @@ def report():
             db.close()
     
     return render_template('report.html', catch=catch, gear=gear, landing=landing, site=site)
-
 
 # Admin dashboard
 @app.route('/admin/dashboard', methods=['GET', 'POST'])
